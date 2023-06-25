@@ -1,12 +1,10 @@
 "use client"
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function AnimePage({ params }) {
   const anime = params.name;
-  const router = useRouter();
 
   const [data, setData] = useState(null);
   const [episodes, setEpisodes] = useState([]);
@@ -22,7 +20,6 @@ export default function AnimePage({ params }) {
   }, []);
 
   if (!data || !episodes) {
-    // Render a loading state or return null
     return null;
   }
 
@@ -65,12 +62,10 @@ export default function AnimePage({ params }) {
             {episodes.map((ep) => (
               <div className="episode" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}`}>
-                  <a>
                     <Image width={350} height={200} alt={ep.title} src={ep.image} />
                     <h2 className="episode-title">
                       Ep. {ep.number}: {ep.title}
                     </h2>
-                  </a>
                 </Link>
               </div>
             ))}
