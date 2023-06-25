@@ -1,24 +1,33 @@
+"use client"
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default async function AnimePage({ params }) {
+export default function AnimePage({ params }) {
   const anime = params.name;
+  const router = useRouter();
 
-  async function getAnimeData() {
-    const res = await fetch(`https://api.enime.moe/anime/${encodeURIComponent(anime)}`, { cache: 'no-store' });
-    return res.json();
+  const [data, setData] = useState(null);
+  const [episodes, setEpisodes] = useState([]);
+
+  useState(() => {
+    fetch(`https://api.enime.moe/anime/${encodeURIComponent(anime)}`, { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => setData(data));
+
+    fetch(`https://api.enime.moe/anime/${encodeURIComponent(anime)}/episodes`, { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((episodes) => setEpisodes(episodes));
+  }, []);
+
+  if (!data || !episodes) {
+    // Render a loading state or return null
+    return null;
   }
 
-  async function getEpisodeData() {
-    const res = await fetch(`https://api.enime.moe/anime/${encodeURIComponent(anime)}/episodes`, { cache: 'no-store' });
-    return res.json();
-  }
-
-  const data = await getAnimeData();
   const rate = data.averageScore;
   const scale = parseInt(rate / 20);
-
-  const episodes = await getEpisodeData();
 
   return (
     <div id="animeInfo">
@@ -56,8 +65,12 @@ export default async function AnimePage({ params }) {
             {episodes.map((ep) => (
               <div className="episode" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}`}>
-                  <Image width="350" height="200" alt={ep.title} src={ep.image} />
-                  <h2 className="episode-title">Ep. {ep.number}: {ep.title}</h2>
+                  <a>
+                    <Image width={350} height={200} alt={ep.title} src={ep.image} />
+                    <h2 className="episode-title">
+                      Ep. {ep.number}: {ep.title}
+                    </h2>
+                  </a>
                 </Link>
               </div>
             ))}

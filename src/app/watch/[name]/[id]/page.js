@@ -37,13 +37,13 @@ export default function AnimePage({ params }) {
     }
 
     async function getAniData() {
-        const res = await fetch(
-          `https://api.enime.moe/anime/${encodeURIComponent(anime)}`,
-          { cache: "no-store" }
-        );
-        const data = await res.json();
-        return data;
-      }
+      const res = await fetch(
+        `https://api.enime.moe/anime/${encodeURIComponent(anime)}`,
+        { cache: "no-store" }
+      );
+      const data = await res.json();
+      return data;
+    }
 
     Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
       ([episodeData, watchData, aniData]) => {
@@ -108,14 +108,18 @@ export default function AnimePage({ params }) {
   return (
     <div id="main">
       <div id="app"></div>
-      {matchingEpisodeNumber && ( <h2>Watching {aniData.title.romaji} Episode {matchingEpisodeNumber}: {matchingTitle} </h2>  )}
+      {matchingEpisodeNumber && (
+        <h2>
+          Watching {aniData.title.romaji} Episode {matchingEpisodeNumber}: {matchingTitle}
+        </h2>
+      )}
       <div id="episodes">
         <h2>Episodes</h2>
         <div className="episodelist-container">
           <div id="episodelist" className="scroll-x">
             {episodes.map((ep) => (
               <div className="episode" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`}>
+                <Link href={`/watch/${anime}/${ep.id}`} key={ep.id}>
                   <Image width="350" height="200" alt={ep.title} src={ep.image} />
                   <h2 className="episode-title">
                     Ep. {ep.number}: {ep.title}
