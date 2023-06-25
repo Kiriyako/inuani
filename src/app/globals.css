@@ -1,0 +1,251 @@
+body {
+  background-color: rgb(0, 0, 0);
+  color: rgb(184, 184, 184);
+  margin: 20px;
+}
+
+#navbarComp{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+
+#inputsearch {
+  margin-left: auto;
+}
+
+.dog{
+  background: transparent;
+  border-radius: 15px;
+  height: 40px;
+  width: 300px;
+  color: rgb(184, 184, 184);
+  padding: 0 9px;
+  border: 2px solid rgb(184, 184, 184);
+  font-size: 25px;
+  text-transform: capitalize;
+  font-weight: 500;
+  margin-left: 30px;
+}
+
+
+
+#footer {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#explore:hover {
+  color: rgb(255, 255, 255);
+}
+
+.star{
+  color: rgb(228, 0, 91);
+  vertical-align: middle;
+}
+
+#app {
+  width: 100%;
+  height: 500px;
+  aspect-ratio: 16/9;
+}
+
+#i1 {
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
+  border-radius: 1rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+#episodelist.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -ms-overflow-style: none; /* Hide scrollbar on Internet Explorer and Edge */
+  scrollbar-width: none; /* Hide scrollbar on Firefox */
+}
+
+#episodelist.scroll-x::-webkit-scrollbar {
+  display: none; /* Hide scrollbar on Chrome, Safari, and Opera */
+}
+
+#episodelist {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+#episodes {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.episode {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.episode h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.episode-title {
+  width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1265px) {
+  .episode {
+    width: calc(33.33% - 10px);
+  }
+}
+
+@media (max-width: 1000px) {
+  .episode {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 810px) {
+  .episode {
+    width: calc(100% - 10px);
+  }
+}
+
+#image {
+  width: 250px;
+  margin-right: 20px;
+}
+
+#info {
+  flex: 1;
+}
+
+@media (max-width: 767px) {
+  #i1 {
+    flex-direction: column;
+    align-items: center; 
+  }
+  
+  #image {
+    margin-right: 0; 
+    margin-bottom: 20px;
+  }
+}
+
+.scaleRating{
+  vertical-align: middle;
+}
+
+.bruh {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+img {
+  border-radius: 20px;
+}
+
+#animegrid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px;
+  justify-content: flex-start;
+  gap: 32px; 
+}
+
+#animeInfo {
+  margin: 30px;
+}
+
+#anime {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+#anime img {
+  object-fit: cover;
+}
+
+#anime h2 {
+  margin-top: 8px; 
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#navbar{
+  text-align: center;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 5px rgb(40, 40, 40);
+	border-radius: 20px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+	background: rgb(40, 40, 40);
+	border-radius: 20px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+	background: rgb(116, 116, 116);
+  }
+
+  a:link {
+    color: inherit;
+    background-color: transparent;
+    text-decoration: none;
+    }
+    
+    a:visited {
+    color: inherit;
+    }
+
+    #loading{
+      font-size: 40px;
+    }
+
+    #animeInfo {
+      margin: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; 
+    }
+    
+    .description {
+      font-size: 17px;
+      margin-top: 20px;
+      white-space: pre-line;
+    }
+    
+    #episodes {
+      margin-top: 30px;
+    }
+
+    #descriptionContainer {
+      max-height: 300px; 
+      overflow-y: auto; 
+      margin-top: 20px;
+    }
+    
+    #descriptionContainer h2 {
+      margin: 0; 
+    }
+      
+    
