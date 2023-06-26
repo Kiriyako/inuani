@@ -62,7 +62,7 @@ export default function AnimePage({ params }) {
             {episodes.map((ep) => (
               <div className="episode" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}`}>
-                    <Image width={350} height={200} alt={ep.title} src={ep.image} />
+                <Image width={350} height={200} alt={ep.title} src={ep.image || data.bannerImage} />
                     <h2 className="episode-title">
                       Ep. {ep.number}: {ep.title}
                     </h2>

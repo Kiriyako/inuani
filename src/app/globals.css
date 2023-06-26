@@ -16,6 +16,7 @@ body {
 }
 
 .dog{
+  font-family: inherit;
   background: transparent;
   border-radius: 15px;
   height: 40px;
