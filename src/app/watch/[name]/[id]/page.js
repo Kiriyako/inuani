@@ -14,6 +14,7 @@ export default function AnimePage({ params }) {
   const [matchingTitle, setMatchingTitle] = useState("");
   const [matchingEpisodeNumber, setMatchingEpisodeNumber] = useState("");
   const [aniData, setAniData] = useState(null);
+  const [videoSource, setVideoSource] = useState(""); 
 
   useEffect(() => {
     async function getEpisodeData() {
@@ -45,64 +46,68 @@ export default function AnimePage({ params }) {
       return data;
     }
 
-    Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
-      ([episodeData, watchData, aniData]) => {
-        console.log(episodeData);
-        console.log(watchData);
-        console.log(aniData)
 
-        setEpisodes(episodeData);
-        setAniData(aniData);
+Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
+  ([episodeData, watchData, aniData]) => {
+    console.log(episodeData);
+    console.log(watchData);
+    console.log(aniData);
 
-        const player = Player.make("#app", {
-          isLive: true,
-          source: {
-            src: `${watchData.sources[3].url}`,
-          },
-        });
+    setEpisodes(episodeData);
+    setAniData(aniData);
 
-        player.use([
-          ui({
-            theme: {
-              primaryColor: "rgb(255, 156, 181)",
-            },
-            controlBar: { back: "fullscreen" },
-            icons: {},
-            keyboard: { focused: true, global: false },
-            showControls: "always",
-            miniProgressBar: true,
-            slideToSeek: "always",
-            screenshot: true,
-            autoFocus: true,
-            forceLandscapeOnFullscreen: true,
-            progressIndicator: true,
-          }),
-          hls({ forceHLS: true }),
-        ]);
+    setVideoSource(watchData.sources[3].url);
 
-        player.create();
+    const player = Player.make("#app", {
+      isLive: true,
+      source: {
+        src: watchData.sources[3].url,
+      },
+    });
 
-        player.context.ui.menu.register({
-          name: "QUALITY",
-          children: watchData.sources.map((source) => ({
-            name: source.quality,
-            default: source.quality === "default",
-            value: source.url,
-          })),
-          onChange({ name, value }, elm) {
-            elm.innerText = name;
-            setSelectedQuality(name);
-            player.changeSource({ src: value });
-          },
-        });
+    player.use([
+      ui({
+        theme: {
+          primaryColor: "rgb(255, 156, 181)",
+        },
+        controlBar: { back: "fullscreen" },
+        icons: {},
+        keyboard: { focused: true, global: false },
+        showControls: "always",
+        miniProgressBar: true,
+        slideToSeek: "always",
+        screenshot: true,
+        autoFocus: true,
+        forceLandscapeOnFullscreen: true,
+        progressIndicator: true,
+      }),
+      hls({ forceHLS: true }),
+    ]);
 
-        const matchingEpisode = episodeData.find((ep) => ep.id === watch);
-        if (matchingEpisode) {
-          setMatchingTitle(matchingEpisode.title);
-          setMatchingEpisodeNumber(matchingEpisode.number);
-        }
-      }
-    );
+    player.create();
+
+    player.context.ui.menu.register({
+      name: "QUALITY",
+      children: watchData.sources.map((source) => ({
+        name: source.quality,
+        default: source.quality === "default",
+        value: source.url,
+      })),
+      onChange({ name, value }, elm) {
+        elm.innerText = name;
+        setSelectedQuality(name);
+        setVideoSource(value); 
+        player.changeSource({ src: value }); 
+      },
+    });
+
+    const matchingEpisode = episodeData.find((ep) => ep.id === watch);
+    if (matchingEpisode) {
+      setMatchingTitle(matchingEpisode.title);
+      setMatchingEpisodeNumber(matchingEpisode.number);
+    }
+  }
+);
   }, [params]);
 
   return (
@@ -110,7 +115,7 @@ export default function AnimePage({ params }) {
       <div id="app"></div>
       {matchingEpisodeNumber && (
         <h2>
-          Watching {aniData.title.romaji} Episode {matchingEpisodeNumber}: {matchingTitle}
+          Watching <Link href={`/anime/${aniData.id}`}> {aniData.title.romaji} </Link> Episode {matchingEpisodeNumber}: {matchingTitle}
         </h2>
       )}
       <div id="episodes">
@@ -130,7 +135,6 @@ export default function AnimePage({ params }) {
           </div>
         </div>
       </div>
-      {selectedQuality && <p>Selected Quality: {selectedQuality}</p>}
     </div>
   );
 }
