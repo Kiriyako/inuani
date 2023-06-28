@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF">
+        <Script id="googleanalytics" strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF">
 
         {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
