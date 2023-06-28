@@ -46,69 +46,81 @@ export default function AnimePage({ params }) {
       return data;
     }
 
+    let playerInstance;
 
-Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
-  ([episodeData, watchData, aniData]) => {
-    console.log(episodeData);
-    console.log(watchData);
-    console.log(aniData);
+    Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
+      ([episodeData, watchData, aniData]) => {
+        console.log(episodeData);
+        console.log(watchData);
+        console.log(aniData);
 
-    setEpisodes(episodeData);
-    setAniData(aniData);
+        setEpisodes(episodeData);
+        setAniData(aniData);
 
-    setVideoSource(watchData.sources[3].url);
+        setVideoSource(watchData.sources[3].url);
 
-    const player = Player.make("#app", {
-      isLive: true,
-      source: {
-        src: watchData.sources[3].url,
-      },
-    });
+        if (playerInstance) {
+          playerInstance.destroy(); // Remove existing player instance
+        }
 
-    player.use([
-      ui({
-        theme: {
-          primaryColor: "rgb(255, 156, 181)",
-        },
-        controlBar: { back: "fullscreen" },
-        icons: {},
-        keyboard: { focused: true, global: false },
-        showControls: "always",
-        miniProgressBar: true,
-        slideToSeek: "always",
-        screenshot: true,
-        autoFocus: true,
-        forceLandscapeOnFullscreen: true,
-        progressIndicator: true,
-      }),
-      hls({ forceHLS: true }),
-    ]);
+        playerInstance = Player.make("#app", {
+          isLive: true,
+          source: {
+            src: watchData.sources[3].url,
+            title: matchingTitle,
+          },
+        });
 
-    player.create();
+        playerInstance.use([
+          ui({
+            theme: {
+              primaryColor: "rgb(255, 156, 181)",
+            },
+            controlBar: { back: "fullscreen" },
+            icons: {},
+            keyboard: { focused: true, global: false },
+            showControls: "always",
+            miniProgressBar: true,
+            slideToSeek: "always",
+            screenshot: true,
+            autoFocus: true,
+            forceLandscapeOnFullscreen: true,
+            progressIndicator: true,
+          }),
+          hls({ forceHLS: true }),
+        ]);
 
-    player.context.ui.menu.register({
-      name: "QUALITY",
-      children: watchData.sources.map((source) => ({
-        name: source.quality,
-        default: source.quality === "default",
-        value: source.url,
-      })),
-      onChange({ name, value }, elm) {
-        elm.innerText = name;
-        setSelectedQuality(name);
-        setVideoSource(value); 
-        player.changeSource({ src: value }); 
-      },
-    });
+        playerInstance.create();
 
-    const matchingEpisode = episodeData.find((ep) => ep.id === watch);
-    if (matchingEpisode) {
-      setMatchingTitle(matchingEpisode.title);
-      setMatchingEpisodeNumber(matchingEpisode.number);
-    }
-  }
-);
-  }, [params]);
+        playerInstance.context.ui.menu.register({
+          name: "QUALITY",
+          children: watchData.sources.map((source) => ({
+            name: source.quality,
+            default: source.quality === "default",
+            value: source.url,
+          })),
+          onChange({ name, value }, elm) {
+            elm.innerText = name;
+            setSelectedQuality(name);
+            setVideoSource(value); 
+            playerInstance.changeSource({ src: value }); 
+          },
+        });
+
+        const matchingEpisode = episodeData.find((ep) => ep.id === watch);
+        if (matchingEpisode) {
+          setMatchingTitle(matchingEpisode.title);
+          setMatchingEpisodeNumber(matchingEpisode.number);
+        }
+      }
+    );
+
+    return () => {
+      if (playerInstance) {
+        playerInstance.destroy(); // Cleanup by removing the player instance
+      }
+    };
+  }, [params, matchingTitle]);
 
   return (
     <div id="main">
