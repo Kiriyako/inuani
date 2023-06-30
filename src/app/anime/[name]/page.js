@@ -51,7 +51,7 @@ export default function AnimePage({ params }) {
             <text className="scaleRating">{scale}</text>{' '}
           </h2>
           <div id="descriptionContainer">
-            <h2 dangerouslySetInnerHTML={{ __html: data.description }}></h2>
+          <h2 dangerouslySetInnerHTML={{ __html: data.description || "No description available" }}></h2>
           </div>
         </div>
       </div>
@@ -62,10 +62,10 @@ export default function AnimePage({ params }) {
             {episodes.map((ep) => (
               <div className="episode" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}`}>
-                <Image width={350} height={200} alt={ep.title} src={ep.image || data.bannerImage} />
-                    <h2 className="episode-title">
-                      Ep. {ep.number}: {ep.title}
-                    </h2>
+                <Image width={350} height={200} alt={ep.title} src={ep.image || data.bannerImage || data.coverImage} />
+                <h2 className="episode-title">
+  Ep. {ep.number}: {ep.title || "Untitled"}
+</h2>
                 </Link>
               </div>
             ))}

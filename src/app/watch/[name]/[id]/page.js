@@ -130,17 +130,17 @@ export default function AnimePage({ params }) {
           Watching <Link href={`/anime/${aniData.id}`}> {aniData.title.romaji} </Link> Episode {matchingEpisodeNumber}: {matchingTitle}
         </h2>
       )}
-      <div id="episodes">
+  <div id="episodes">
         <h2>Episodes</h2>
         <div className="episodelist-container">
           <div id="episodelist" className="scroll-x">
             {episodes.map((ep) => (
               <div className="episode" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`} key={ep.id}>
-                  <Image width="350" height="200" alt={ep.title} src={ep.image || aniData.bannerImage} />
-                  <h2 className="episode-title">
-                    Ep. {ep.number}: {ep.title}
-                  </h2>
+                <Link href={`/watch/${anime}/${ep.id}`}>
+                <Image width={350} height={200} alt={ep.title} src={ep.image || aniData.bannerImage || aniData.coverImage} />
+                <h2 className="episode-title">
+  Ep. {ep.number}: {ep.title || "Untitled"}
+</h2>
                 </Link>
               </div>
             ))}
