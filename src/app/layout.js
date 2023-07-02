@@ -14,14 +14,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <Script id="googleanalytics" strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF">
+        <Script id="google-analytics" strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF" />
 
+        <Script id="google-analytics" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', newDate());
           gtag('config', 'G-H2CPPMFKCF')
           `}
-        
         </Script>
          <Navbar />
         {children}
