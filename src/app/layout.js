@@ -13,20 +13,23 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="google-site-verification" content="9-9vAjzTah0o2xORCcKZfBHyCaOhGytedLiRObIAmNc" />
+      </head>
       <body className={poppins.className}>
         <Script id="google-analytics" strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF" />
 
         <Script id="google-analytics" strategy="afterInteractive">
-        {`window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-H2CPPMFKCF');
+          {`window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-H2CPPMFKCF');
           `}
         </Script>
-         <Navbar />
+        <Navbar />
         {children}
         <Footer />
-        </body>
+      </body>
     </html>
   )
 }
