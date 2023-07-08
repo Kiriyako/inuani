@@ -14,6 +14,7 @@ export default async function Page() {
           <div id="anime">
             <img width="250" height="350" alt={anime.title.romaji} src={anime.coverImage} />
             <h2 style={{ color: anime.color }}>{anime.title.romaji}</h2>
+            
           </div>
         </Link>
       ))}

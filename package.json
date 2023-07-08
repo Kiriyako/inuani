@@ -13,6 +13,7 @@
     "@oplayer/hls": "^1.2.22",
     "@oplayer/torrent": "^1.2.23",
     "@oplayer/ui": "^1.2.29",
+    "@sentry/nextjs": "^7.57.0",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
     "next": "13.4.7",
