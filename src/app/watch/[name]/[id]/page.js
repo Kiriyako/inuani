@@ -1,5 +1,5 @@
-"use client"
-import { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState, useRef } from "react";
 import Player from "@oplayer/core";
 import ui from "@oplayer/ui";
 import hls from "@oplayer/hls";
@@ -14,7 +14,9 @@ export default function AnimePage({ params }) {
   const [matchingTitle, setMatchingTitle] = useState("");
   const [matchingEpisodeNumber, setMatchingEpisodeNumber] = useState("");
   const [aniData, setAniData] = useState(null);
-  const [videoSource, setVideoSource] = useState(""); 
+  const [videoSource, setVideoSource] = useState("");
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const playerRef = useRef(null);
 
   useEffect(() => {
     async function getEpisodeData() {
@@ -46,8 +48,6 @@ export default function AnimePage({ params }) {
       return data;
     }
 
-    let playerInstance;
-
     Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
       ([episodeData, watchData, aniData]) => {
         console.log(episodeData);
@@ -56,17 +56,13 @@ export default function AnimePage({ params }) {
 
         setEpisodes(episodeData);
         setAniData(aniData);
+        setMatchingTitle(episodeData[0]?.title || "");
+        setMatchingEpisodeNumber(episodeData[0]?.number || "");
 
-        setVideoSource(watchData.sources[3].url);
-
-        if (playerInstance) {
-          playerInstance.destroy(); // Remove existing player instance
-        }
-
-        playerInstance = Player.make("#app", {
+        const playerInstance = Player.make("#app", {
           isLive: true,
           source: {
-            src: watchData.sources[3].url,
+            src: "", 
             title: matchingTitle,
           },
         });
@@ -91,6 +87,7 @@ export default function AnimePage({ params }) {
         ]);
 
         playerInstance.create();
+        playerRef.current = playerInstance;
 
         playerInstance.context.ui.menu.register({
           name: "QUALITY",
@@ -102,8 +99,8 @@ export default function AnimePage({ params }) {
           onChange({ name, value }, elm) {
             elm.innerText = name;
             setSelectedQuality(name);
-            setVideoSource(value); 
-            playerInstance.changeSource({ src: value }); 
+            setVideoSource(value);
+            playerInstance.changeSource({ src: value });
           },
         });
 
@@ -111,42 +108,63 @@ export default function AnimePage({ params }) {
         if (matchingEpisode) {
           setMatchingTitle(matchingEpisode.title);
           setMatchingEpisodeNumber(matchingEpisode.number);
+          if (watchData.sources && watchData.sources.length > 0) {
+            setVideoSource(watchData.sources[watchData.sources.length - 1].url);
+            playerInstance.changeSource({ src: watchData.sources[watchData.sources.length - 1].url });
+          }
         }
+
+        setIsPlayerReady(true);
       }
     );
 
     return () => {
-      if (playerInstance) {
-        playerInstance.destroy(); // Cleanup by removing the player instance
+      if (playerRef.current) {
+        playerRef.current.destroy(); 
       }
     };
-  }, [params, matchingTitle]);
+  }, [params]);
 
   return (
     <div id="main">
       <div id="app"></div>
-      {matchingEpisodeNumber && (
-        <h2>
-          Watching <Link href={`/anime/${aniData.id}`}> {aniData.title.romaji} </Link> Episode {matchingEpisodeNumber}: {matchingTitle}
-        </h2>
-      )}
-  <div id="episodes">
-        <h2>Episodes</h2>
-        <div className="episodelist-container">
-          <div id="episodelist" className="scroll-x">
-            {episodes.map((ep) => (
-              <div className="episode" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`}>
-                <Image width={350} height={200} alt={ep.title} src={ep.image || aniData.bannerImage || aniData.coverImage} />
-                <h2 className="episode-title">
-  Ep. {ep.number}: {ep.title || "Untitled"}
-</h2>
-                </Link>
+      {isPlayerReady && (
+        <>
+          {matchingEpisodeNumber && (
+            <h2>
+              Watching{" "}
+              <Link href={`/anime/${aniData.id}`}>{aniData.title.romaji}</Link>{" "}
+              Episode {matchingEpisodeNumber}: {matchingTitle}
+            </h2>
+          )}
+          <div id="episodes">
+            <h2>Episodes</h2>
+            <div className="episodelist-container">
+              <div id="episodelist" className="scroll-x">
+                {episodes.map((ep) => (
+                  <div className="episode" key={ep.id}>
+                    <Link href={`/watch/${anime}/${ep.id}`}>
+                      <Image
+                        width={350}
+                        height={200}
+                        alt={ep.title}
+                        src={
+                          ep.image ||
+                          aniData.bannerImage ||
+                          aniData.coverImage
+                        }
+                      />
+                      <h2 className="episode-title">
+                        Ep. {ep.number}: {ep.title || "Untitled"}
+                      </h2>
+                    </Link>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
