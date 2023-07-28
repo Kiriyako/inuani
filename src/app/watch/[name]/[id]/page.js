@@ -64,7 +64,7 @@ export default function AnimePage({ params }) {
         }).use([
           ui({
             theme: {
-              primaryColor: "rgb(117, 171, 255)",
+              primaryColor: "rgb(99, 216, 255)",
             },
             screenshot: true,
             controlBar: { back: "always" },
@@ -81,6 +81,7 @@ export default function AnimePage({ params }) {
               ],
               loop: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat-2"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg>`,
               playbackRate: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>`,
+              
             }
           }),
           hls({ forceHLS: true }),
@@ -141,7 +142,6 @@ export default function AnimePage({ params }) {
         <>
           {matchingEpisodeNumber && (
             <h2>
-              Watching{" "}
               <Link href={`/anime/${aniData.id}`}>{aniData.title.romaji}</Link>{" "}
               Episode {matchingEpisodeNumber}: {matchingTitle}
             </h2>
@@ -154,8 +154,8 @@ export default function AnimePage({ params }) {
                   <div className="episode" key={ep.id}>
                     <Link href={`/watch/${anime}/${ep.id}`}>
                       <Image
-                        width={350}
-                        height={200}
+                        width={270}
+                        height={150}
                         alt={ep.title}
                         src={
                           ep.image ||

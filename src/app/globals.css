@@ -88,7 +88,7 @@ body {
 
 .episode {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .episode h2 {
@@ -97,7 +97,8 @@ body {
 }
 
 .episode-title {
-  width: 350px;
+  font-size: 20px;
+  width: 280px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -247,7 +248,7 @@ a:visited {
 }
 
 #descriptionContainer {
-  max-height: 300px;
+  max-height: 250px;
   overflow-y: auto;
   margin-top: 20px;
 }
