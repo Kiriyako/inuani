@@ -73,7 +73,7 @@ body {
 }
 
 #episodelist.scroll-x::-webkit-scrollbar {
-  display: none; /* Hide scrollbar on Chrome, Safari, and Opera */
+height: 10px;
 }
 
 #episodelist {
