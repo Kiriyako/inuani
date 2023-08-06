@@ -68,8 +68,8 @@ body {
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  -ms-overflow-style: none; /* Hide scrollbar on Internet Explorer and Edge */
-  scrollbar-width: none; /* Hide scrollbar on Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
 }
 
 #episodelist.scroll-x::-webkit-scrollbar {

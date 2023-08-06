@@ -1,4 +1,5 @@
 "use client";
+import styles from './AnimePage.module.css'; 
 import { useEffect, useState, useRef } from "react";
 import Player from "@oplayer/core";
 import ui from "@oplayer/ui";
@@ -146,32 +147,33 @@ export default function AnimePage({ params }) {
               Episode {matchingEpisodeNumber}: {matchingTitle}
             </h2>
           )}
-          <div id="episodes">
-            <h2>Episodes</h2>
-            <div className="episodelist-container">
-              <div id="episodelist" className="scroll-x">
-                {episodes.map((ep) => (
-                  <div className="episode" key={ep.id}>
-                    <Link href={`/watch/${anime}/${ep.id}`}>
-                      <Image
-                        width={270}
-                        height={150}
-                        alt={ep.title}
-                        src={
-                          ep.image ||
-                          aniData.bannerImage ||
-                          aniData.coverImage
-                        }
-                      />
-                      <h2 className="episode-title">
-                        Ep. {ep.number}: {ep.title || "Untitled"}
-                      </h2>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+   <div id="episodes">
+  <h2>Episodes</h2>
+  <div className="episodelist-container">
+    <div id="episodelist" className="scroll-x">
+      {episodes.map((ep) => (
+        <div className="episode" key={ep.id}>
+          <Link href={`/watch/${anime}/${ep.id}`}>
+            <div className={ep.id === watch ? styles.currentEpisode : styles.thumbnail}>
+              {ep.id === watch && <div className={styles.currentText}>CURRENT</div>}
+              <Image
+                width={270}
+                height={150}
+                alt={ep.title}
+                src={ep.image || aniData.bannerImage || aniData.coverImage}
+              />
             </div>
-          </div>
+            <h2 className="episode-title">
+              Ep. {ep.number}: {ep.title || "Untitled"}
+            </h2>
+          </Link>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+
         </>
       )}
     </div>
