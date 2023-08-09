@@ -143,8 +143,8 @@ export default function AnimePage({ params }) {
         <>
           {matchingEpisodeNumber && (
             <h2>
-              <Link href={`/anime/${aniData.id}`}>{aniData.title.romaji}</Link>{" "}
-              Episode {matchingEpisodeNumber}: {matchingTitle}
+              <Link href={`/anime/${aniData.id}`}>{aniData.title.romaji}</Link>{" "} <br></br>
+              <div style={{fontSize: '20px'}} id="epname">Episode {matchingEpisodeNumber}: {matchingTitle}</div>
             </h2>
           )}
    <div id="episodes">
