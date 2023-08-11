@@ -23,4 +23,7 @@ export const generateMetadata = async ({ params }) => {
     title: title,
     description: description,
   };
-};
+  
+};  export default function layout({ children }) {
+  return <div>{children}</div>;
+}
