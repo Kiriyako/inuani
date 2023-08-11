@@ -11,15 +11,16 @@ export const generateMetadata = async ({ params }) => {
 
   const matchingEpisode = episodeData.find((ep) => ep.id === watch);
 
-  const title = matchingEpisode
-    ? `Episode ${matchingEpisode.number}: ${matchingEpisode.title} - ${aniData.title.romaji}`
-    : aniData.title.romaji;
+  let title = aniData.title.romaji;
+  let description = 'A site to watch anime';
+
+  if (matchingEpisode) {
+    title = `Watch ${aniData.title.romaji} Episode ${matchingEpisode.number}: ${matchingEpisode.title}`;
+    description = matchingEpisode.description || description;
+  }
 
   return {
     title: title,
+    description: description,
   };
 };
-
-  export default function layout({ children }) {
-    return <div>{children}</div>;
-  }
