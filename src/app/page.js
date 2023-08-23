@@ -25,7 +25,6 @@ export default async function Page() {
           </Link>
         ))}
       </div>
-      <br />
       <div id="episodes">
         <h1>Recent Episodes</h1>
         <div className="episodelist-container">
