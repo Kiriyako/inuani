@@ -12,7 +12,7 @@ export default async function Search({ params }) {
   const hasData = data && data.data && Array.isArray(data.data) && data.data.length > 0;
 
   return (
-    <div id="animegrid">
+    <div style={{margin: 30}}id="animegrid">
       {hasData ? (
         data.data.map((anime) => (
           <Link href={`/anime/${anime.id}`} key={anime.id}>

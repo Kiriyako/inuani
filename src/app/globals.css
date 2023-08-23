@@ -81,6 +81,23 @@ height: 10px;
   white-space: nowrap;
 }
 
+#episodelistt.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
+}
+
+#episodelistt.scroll-x::-webkit-scrollbar {
+height: 10px;
+}
+
+#episodelistt {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
 #episodes {
   width: 100%;
   overflow-x: auto;
@@ -88,7 +105,7 @@ height: 10px;
 
 .episode {
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 25px;
 }
 
 .episode h2 {
@@ -156,10 +173,12 @@ img {
   border-radius: 20px;
 }
 
+#front{
+  margin: 30px;
+}
 #animegrid {
   display: flex;
   flex-wrap: wrap;
-  margin: 30px;
   justify-content: flex-start;
   gap: 32px;
 }
