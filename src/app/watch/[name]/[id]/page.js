@@ -7,58 +7,53 @@ import hls from "@oplayer/hls";
 import Image from "next/image";
 import Link from "next/link";
 
+// ... (previous imports)
+
 export default function AnimePage({ params }) {
   const anime = params.name;
   const watch = params.id;
   const [episodes, setEpisodes] = useState([]);
-  const [selectedQuality, setSelectedQuality] = useState("");
-  const [matchingTitle, setMatchingTitle] = useState("");
-  const [matchingEpisodeNumber, setMatchingEpisodeNumber] = useState("");
   const [aniData, setAniData] = useState(null);
-  const [videoSource, setVideoSource] = useState("");
+  const [animeData, setAnimeData] = useState(null);
+  const [videoSource, setVideoSource] = useState('');
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const playerRef = useRef(null);
-
+  const findEpisodeNumber = (episodeId) => {
+    const episode = animeData?.episodes.find(ep => ep.id === episodeId);
+    return episode ? episode.number : "Unknown";
+  };
   useEffect(() => {
     async function getEpisodeData() {
-      const res = await fetch(
-        `https://api.enime.moe/anime/${encodeURIComponent(anime)}/episodes`,
-        { cache: "no-store" }
-      );
-      const data = await res.json();
-      return data;
-    }
-
-    async function getEpisodeWatch() {
-      const res = await fetch(
-        `https://api.consumet.org/anime/enime/watch?episodeId=${encodeURIComponent(
-          watch
-        )}`,
-        { cache: "no-store" }
-      );
-      const data = await res.json();
-      return data;
+      try {
+        const res = await fetch(`https://api.consumet.org/anime/gogoanime/watch/${watch}`, { cache: 'no-store' });
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching episode data:', error);
+        return {};
+      }
     }
 
     async function getAniData() {
-      const res = await fetch(
-        `https://api.enime.moe/anime/${encodeURIComponent(anime)}`,
-        { cache: "no-store" }
-      );
-      const data = await res.json();
-      return data;
+      try {
+        const res = await fetch(`https://api.consumet.org/anime/gogoanime/info/${anime}`, { cache: 'no-store' });
+        const data = await res.json();
+        setAnimeData(data);  // Move this line here
+        return data;
+      } catch (error) {
+        console.error('Error fetching anime data:', error);
+        return {};
+      }
     }
-    Promise.all([getEpisodeData(), getEpisodeWatch(), getAniData()]).then(
-      ([episodeData, watchData, aniData]) => {
-        setEpisodes(episodeData);
-        setAniData(aniData);
-        setMatchingTitle(episodeData[0]?.title || "");
-        setMatchingEpisodeNumber(episodeData[0]?.number || "");
+
+    Promise.all([getEpisodeData(), getAniData()]).then(
+      ([episodeData]) => {
 
         const player = Player.make("#app", {
           source: {
             src: "",
           },
+          defaultQuality: '1080p',
           videoAttr: {
             // crossOrigin: "anonymous"
           }
@@ -89,6 +84,7 @@ export default function AnimePage({ params }) {
         ]);
 
         player.create();
+        setEpisodes(episodeData);
 
         var forward = document.createElement("button");
         forward.className = "forward";
@@ -109,19 +105,16 @@ export default function AnimePage({ params }) {
         player.$root.appendChild(backward);
         player.$root.appendChild(forward);
 
-        const matchingEpisode = episodeData.find((ep) => ep.id === watch);
-        if (matchingEpisode) {
-          setMatchingTitle(matchingEpisode.title);
-          setMatchingEpisodeNumber(matchingEpisode.number);
-          if (watchData.sources && watchData.sources.length > 0) {
+       
+          if (episodeData.sources && episodeData.sources.length > 0) {
             setVideoSource(
-              watchData.sources[watchData.sources.length - 1].url
+              episodeData.sources[episodeData.sources.length - 1].url
             );
             player.changeSource({
-              src: watchData.sources[watchData.sources.length - 1].url
+              src: episodeData.sources[episodeData.sources.length - 1].url
             });
           }
-        }
+        
 
         setIsPlayerReady(true);
         playerRef.current = player;
@@ -135,47 +128,32 @@ export default function AnimePage({ params }) {
     };
   }, [params]);
 
-
   return (
+    
     <div id="main">
       <div id="app"></div>
-      {isPlayerReady && (
-        <>
-          {matchingEpisodeNumber && (
-            <h2>
-              <Link href={`/anime/${aniData.id}`}>{aniData.title.romaji}</Link>{" "} <br></br>
-              <div style={{fontSize: '20px'}} id="epname">Episode {matchingEpisodeNumber}: {matchingTitle}</div>
-            </h2>
-          )}
-   <div id="episodes">
-  <h2>Episodes</h2>
-  <div className="episodelist-container">
-    <div id="episodelist" className="scroll-x">
-      {episodes.map((ep) => (
-        <div className="episode" key={ep.id}>
-          <Link href={`/watch/${anime}/${ep.id}`}>
-            <div className={ep.id === watch ? styles.currentEpisode : styles.thumbnail}>
-              {ep.id === watch && <div className={styles.currentText}>CURRENT</div>}
-              <Image
-                width={270}
-                height={150}
-                alt={ep.title}
-                src={ep.image || aniData.bannerImage || aniData.coverImage}
-              />
-            </div>
-            <h2 className="episode-title">
-              Ep. {ep.number}: {ep.title || "Untitled"}
-            </h2>
-          </Link>
+      
+      <h2>Currenly watching <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link>  Episode {findEpisodeNumber(watch)}</h2>
+        <div id="episodes">
+        <h2>Episodes ({animeData?.totalEpisodes || 0})</h2>
+        <div className="episodelist-container">
+          <div id="episodelist" className="scroll-x">
+            {animeData?.episodes.map((ep) => (
+              <div className="episode" key={ep.id}>
+                <a href={`/watch/${anime}/${ep.id}`} target="_blank" rel="noopener noreferrer">
+                  <h2 className="episode-title">
+                    Episode {ep.number}
+                  </h2>
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-</div>
-
-
-        </>
-      )}
+      </div>
     </div>
   );
 }
+
+
+
+
