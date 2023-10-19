@@ -133,7 +133,7 @@ export default function AnimePage({ params }) {
     <div id="main">
       <div id="app"></div>
       
-      <h2>Currenly watching <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link>  Episode {findEpisodeNumber(watch)}</h2>
+      <h2>Currently watching <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link>  Episode {findEpisodeNumber(watch)}</h2>
         <div id="episodes">
         <h2>Episodes ({animeData?.totalEpisodes || 0})</h2>
         <div className="episodelist-container">
