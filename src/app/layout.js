@@ -1,23 +1,30 @@
-import Navbar from './components/Navbar/nav'
-import './globals.css'
-import { Noto_Sans } from 'next/font/google'
-import Footer from './components/Footer/footer'
-import Script from 'next/script'
-const roboto = Noto_Sans({ subsets: ['latin'], weight: '400' })
+import Navbar from "./components/Navbar/nav";
+import "./globals.css";
+import { Noto_Sans } from "next/font/google";
+import Footer from "./components/Footer/footer";
+import Script from "next/script";
+const roboto = Noto_Sans({ subsets: ["latin"], weight: "400" });
 
 export const metadata = {
-  title: 'inu - home',
-  description: 'a site to watch anime',
-}
+  title: "inu - home",
+  description: "a site to watch anime",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <meta name="google-site-verification" content="9-9vAjzTah0o2xORCcKZfBHyCaOhGytedLiRObIAmNc" />
+        <meta
+          name="google-site-verification"
+          content="9-9vAjzTah0o2xORCcKZfBHyCaOhGytedLiRObIAmNc"
+        />
       </head>
       <body className={roboto.className}>
-        <Script id="google-analytics" strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF" />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF"
+        />
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
@@ -31,5 +38,5 @@ export default function RootLayout({ children }) {
         <Footer />
       </body>
     </html>
-  )
+  );
 }

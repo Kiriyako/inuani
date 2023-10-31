@@ -1,8 +1,11 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default async function Page() {
   async function getAnimeData() {
-    const res = await fetch(`https://api.consumet.org/anime/gogoanime/top-airing`, { cache: 'no-store' });
+    const res = await fetch(
+      `https://api.consumet.org/anime/gogoanime/top-airing`,
+      { cache: "no-store" }
+    );
     return res.json();
   }
 
@@ -14,7 +17,12 @@ export default async function Page() {
         {data.results.map((anime) => (
           <Link href={`/anime/${anime.id}`} key={anime.id}>
             <div id="anime">
-              <img width="250" height="350" alt={anime.title} src={anime.image} />
+              <img
+                width="250"
+                height="350"
+                alt={anime.title}
+                src={anime.image}
+              />
               <h2>{anime.title}</h2>
             </div>
           </Link>

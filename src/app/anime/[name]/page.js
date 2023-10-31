@@ -1,5 +1,5 @@
-"use client"
-import React, { useState, useEffect } from 'react';
+"use client";
+import React, { useState, useEffect } from "react";
 
 export default function AnimePage({ params }) {
   const anime = params.name;
@@ -25,10 +25,14 @@ export default function AnimePage({ params }) {
         <div id="info">
           <h2>{data.title}</h2>
           <h2>
-            {data.status} | {data.type} | {data.genres.join(', ')}
+            {data.status} | {data.type} | {data.genres.join(", ")}
           </h2>
           <div id="descriptionContainer">
-            <h2 dangerouslySetInnerHTML={{ __html: data.description || "No description available" }}></h2>
+            <h2
+              dangerouslySetInnerHTML={{
+                __html: data.description || "No description available",
+              }}
+            ></h2>
           </div>
         </div>
       </div>
@@ -37,11 +41,9 @@ export default function AnimePage({ params }) {
         <div className="episodelist-container">
           <div id="episodelist" className="scroll-x">
             {data.episodes.map((ep) => (
-              <div className="episode" key={ep.id}>
-                <a href={`/watch/${anime}/${ep.id}`} target="_blank" rel="noopener noreferrer">
-                  <h2 className="episode-title">
-                    Episode {ep.number}
-                  </h2>
+              <div className="episode-box" key={ep.id}>
+                <a href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
+                  <h2 className="episode-title">{ep.number}</h2>
                 </a>
               </div>
             ))}

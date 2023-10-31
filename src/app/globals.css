@@ -1,366 +1,388 @@
 body {
-  background-color: rgb(0, 0, 0);
-  color: rgb(184, 184, 184);
-  margin: 20px;
+	background-color: rgb(0, 0, 0);
+	color: rgb(184, 184, 184);
+	margin: 20px;
 }
 
 #navbarComp {
-  justify-content: center;
-  display: flex;
-  align-items: center;
+	justify-content: center;
+	display: flex;
+	align-items: center;
 }
 
 #inputsearch {
-  margin-left: auto;
+	margin-left: auto;
 }
 
 .dog {
-  font-family: inherit;
-  background: transparent;
-  border-radius: 15px;
-  height: 40px;
-  width: 100%;
-  max-width: 300px;
-  color: rgb(184, 184, 184);
-  padding: 0 9px;
-  border: 2px solid rgb(184, 184, 184);
-  font-size: 25px;
-  text-transform: capitalize;
-  font-weight: 500;
-  margin-left: 30px;
+	font-family: inherit;
+	background: transparent;
+	border-radius: 15px;
+	height: 40px;
+	width: 100%;
+	max-width: 300px;
+	color: rgb(184, 184, 184);
+	padding: 0 9px;
+	border: 2px solid rgb(184, 184, 184);
+	font-size: 25px;
+	text-transform: capitalize;
+	font-weight: 500;
+	margin-left: 30px;
 }
 
 #footer {
-  font-size: 18px;
-  font-weight: 700;
+	font-size: 18px;
+	font-weight: 700;
 }
 
 #explore:hover {
-  color: rgb(255, 255, 255);
+	color: rgb(255, 255, 255);
 }
 
 .star {
-  color: rgb(228, 0, 91);
-  vertical-align: middle;
+	color: rgb(228, 0, 91);
+	vertical-align: middle;
 }
 
 #app {
-  width: 100%;
-  height: 500px;
-  aspect-ratio: 16/9;
+	width: 100%;
+	height: 500px;
+	aspect-ratio: 16/9;
 }
 
 #i1 {
-  width: 100%;
-  height: 400px;
-  margin-top: 20px;
-  border-radius: 1rem;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  overflow: hidden;
+	width: 100%;
+	height: 400px;
+	margin-top: 20px;
+	border-radius: 1rem;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	overflow: hidden;
 }
 
+.episode-box {
+	display: inline-flex;
+	margin-right: 10px;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+
+.episode-box a {
+	display: inline-flex;
+	width: 60px;
+	height: 50px;
+	background-color: #0793ff00;
+	color: #fff;
+	border: 1px solid #58a9ff;
+	text-decoration: none;
+	line-height: 15px;
+}
+
+
 #episodelist.scroll-x {
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  -ms-overflow-style: none;
-  scrollbar-width: none; 
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 #episodelist.scroll-x::-webkit-scrollbar {
-height: 10px;
+	height: 10px;
 }
 
 #episodelist {
-  overflow-x: auto;
-  white-space: nowrap;
+	overflow-x: auto;
+	white-space: nowrap;
 }
 
 #episodelistt.scroll-x {
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  -ms-overflow-style: none;
-  scrollbar-width: none; 
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 #episodelistt.scroll-x::-webkit-scrollbar {
-height: 10px;
+	height: 10px;
 }
 
 #episodelistt {
-  overflow-x: auto;
-  white-space: nowrap;
+	overflow-x: auto;
+	white-space: nowrap;
 }
 
 #episodes {
-  width: 100%;
-  overflow-x: auto;
+	width: 100%;
+	overflow-x: auto;
 }
 
 .episode {
-  display: inline-block;
-  margin-right: 25px;
+	display: inline-block;
+	margin-right: 25px;
 }
 
 .episode h2 {
-  overflow: hidden;
-  text-overflow: ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .episode-title {
-  font-size: 20px;
-  width: 280px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	font-size: 20px;
+	width: 280px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 @media (max-width: 1265px) {
-  .episode {
-    width: calc(33.33% - 10px);
-  }
+	.episode {
+		width: calc(33.33% - 10px);
+	}
 }
 
 @media (max-width: 1000px) {
-  .episode {
-    width: calc(50% - 10px);
-  }
+	.episode {
+		width: calc(50% - 10px);
+	}
 }
 
 @media (max-width: 810px) {
-  .episode {
-    width: calc(100% - 10px);
-  }
+	.episode {
+		width: calc(100% - 10px);
+	}
 }
 
 #image {
-  width: 250px;
-  margin-right: 20px;
+	width: 250px;
+	margin-right: 20px;
 }
 
 #info {
-  flex: 1;
+	flex: 1;
 }
 
 @media (max-width: 767px) {
-  #i1 {
-    flex-direction: column;
-    align-items: center;
-  }
+	#i1 {
+		flex-direction: column;
+		align-items: center;
+	}
 
-  #image {
-    margin-right: 0;
-    margin-bottom: 20px;
-  }
+	#image {
+		margin-right: 0;
+		margin-bottom: 20px;
+	}
 }
 
 .scaleRating {
-  vertical-align: middle;
+	vertical-align: middle;
 }
 
 .bruh {
-  font-size: 25px;
-  font-weight: 700;
+	font-size: 25px;
+	font-weight: 700;
 }
 
 img {
-  border-radius: 20px;
+	border-radius: 20px;
 }
 
-#front{
-  margin: 30px;
+#front {
+	margin: 30px;
 }
+
 #animegrid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 32px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 32px;
 }
 
 #animeInfo {
-  margin: 30px;
+	margin: 30px;
 }
 
 #anime {
-  display: flex;
-  flex-direction: column;
-  width: 250px;
+	display: flex;
+	flex-direction: column;
+	width: 250px;
 }
 
 #anime h2 {
-  margin-top: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%; 
+	margin-top: 8px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 100%;
 }
 
 #anime:hover {
- opacity: 0.6;
+	opacity: 0.6;
 }
 
 .episode:hover {
-  opacity: 0.6;
- }
+	opacity: 0.6;
+}
 
 #anime img {
-  object-fit: cover;
+	object-fit: cover;
 }
 
 #navbar {
-  text-align: center;
+	text-align: center;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+	width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgb(40, 40, 40);
-  border-radius: 20px;
+	box-shadow: inset 0 0 5px rgb(40, 40, 40);
+	border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(40, 40, 40);
-  border-radius: 20px;
+	background: rgb(40, 40, 40);
+	border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(116, 116, 116);
+	background: rgb(116, 116, 116);
 }
 
 a:link {
-  color: inherit;
-  background-color: transparent;
-  text-decoration: none;
+	color: inherit;
+	background-color: transparent;
+	text-decoration: none;
 }
 
 a:visited {
-  color: inherit;
+	color: inherit;
 }
 
 #loading {
-  font-size: 40px;
+	font-size: 40px;
 }
 
 #animeInfo {
-  margin: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+	margin: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
 .description {
-  font-size: 17px;
-  margin-top: 20px;
-  white-space: pre-line;
+	font-size: 17px;
+	margin-top: 20px;
+	white-space: pre-line;
 }
 
 #episodes {
-  margin-top: 30px;
+	margin-top: 30px;
 }
 
 #descriptionContainer {
-  max-height: 250px;
-  overflow-y: auto;
-  margin-top: 20px;
+	max-height: 250px;
+	overflow-y: auto;
+	margin-top: 20px;
 }
 
 #descriptionContainer h2 {
-  margin: 0;
+	margin: 0;
 }
 
 @media (max-width: 600px) {
-  #animegrid {
-    margin: 15px;
-  }
+	#animegrid {
+		margin: 15px;
+	}
 
-  #anime {
-    width: 100%;
-    max-width: 250px;
-  }
+	#anime {
+		width: 100%;
+		max-width: 250px;
+	}
 
-  #anime img {
-    width: 100%;
-    height: auto;
-  }
+	#anime img {
+		width: 100%;
+		height: auto;
+	}
 }
 
 @media (max-width: 480px) {
-  body{
-    margin: 0px;
-    text-align: center;
-    justify-content: center;
-  }
-  #navbarComp {
-    flex-direction: column;
-  }
+	body {
+		margin: 0px;
+		text-align: center;
+		justify-content: center;
+	}
 
-  #inputsearch {
-    margin-top: 20px;
-    margin-left: 0;
-  }
+	#navbarComp {
+		flex-direction: column;
+	}
 
-  .dog {
-    max-width: none;
-  }
+	#inputsearch {
+		margin-top: 20px;
+		margin-left: 0;
+	}
 
-  #animegrid {
-    margin: 15px;
-    gap: 15px;
-  }
+	.dog {
+		max-width: none;
+	}
+
+	#animegrid {
+		margin: 15px;
+		gap: 15px;
+	}
 }
 
 #app {
-  width: 100%;
-  aspect-ratio: 16/9;
+	width: 100%;
+	aspect-ratio: 16/9;
 }
 
 .backward,
 .forward {
-  transition: 0.4s opacity, 0.4s visibility;
+	transition: 0.4s opacity, 0.4s visibility;
 }
 
 [data-ctrl-hidden="true"] .forward,
 [data-ctrl-hidden="true"] .backward {
-  visibility: hidden;
-  opacity: 0;
+	visibility: hidden;
+	opacity: 0;
 }
 
 .backward,
 .forward {
-  width: 4em;
-  color: #fff;
-  position: absolute;
-  background: none;
-  outline: none;
-  border: none;
+	width: 4em;
+	color: #fff;
+	position: absolute;
+	background: none;
+	outline: none;
+	border: none;
 }
 
 .backward {
-  left: 25%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+	left: 25%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .forward {
-  right: 25%;
-  top: 50%;
-  transform: translate(50%, -50%);
+	right: 25%;
+	top: 50%;
+	transform: translate(50%, -50%);
 }
 
 .backward:active svg {
-  transform: rotate(-45deg);
-  transition: 0.1s transform;
+	transform: rotate(-45deg);
+	transition: 0.1s transform;
 }
 
 .forward:active svg {
-  transform: rotate(45deg);
-  transition: 0.1s transform;
+	transform: rotate(45deg);
+	transition: 0.1s transform;
 }

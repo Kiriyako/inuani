@@ -1,4 +1,3 @@
-
-  export default function layout({ children }) {
-    return <div>{children}</div>;
-  }
+export default function layout({ children }) {
+  return <div>{children}</div>;
+}
