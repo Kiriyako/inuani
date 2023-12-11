@@ -3,7 +3,7 @@ import Link from "next/link";
 export default async function Page() {
   async function getAnimeData() {
     const res = await fetch(
-      `https://api.consumet.org/anime/gogoanime/top-airing`,
+      `https://consumet-api-q5mn.onrender.com/anime/gogoanime/top-airing`,
       { cache: "no-store" }
     );
     return res.json();

@@ -7,7 +7,7 @@ export default function AnimePage({ params }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://api.consumet.org/anime/gogoanime/info/${anime}`)
+    fetch(`https://consumet-api-q5mn.onrender.com/anime/gogoanime/info/${anime}`)
       .then((res) => res.json())
       .then((data) => setData(data));
   }, []);
@@ -27,13 +27,13 @@ export default function AnimePage({ params }) {
           <h2>
             {data.status} | {data.type} | {data.genres.join(", ")}
           </h2>
-          <div id="descriptionContainer">
-            <h2
-              dangerouslySetInnerHTML={{
-                __html: data.description || "No description available",
-              }}
-            ></h2>
-          </div>
+          <div id="descriptionContainer" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+        <h2
+          dangerouslySetInnerHTML={{
+            __html: data.description || "No description available",
+          }}
+        ></h2>
+      </div>
         </div>
       </div>
       <div id="episodes">

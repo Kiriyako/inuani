@@ -21,7 +21,7 @@ export default function AnimePage({ params }) {
     async function getEpisodeData() {
       try {
         const res = await fetch(
-          `https://api.consumet.org/anime/gogoanime/watch/${watch}`,
+          `https://consumet-api-q5mn.onrender.com/anime/gogoanime/watch/${watch}`,
           { cache: "no-store" }
         );
         const data = await res.json();
@@ -35,7 +35,7 @@ export default function AnimePage({ params }) {
     async function getAniData() {
       try {
         const res = await fetch(
-          `https://api.consumet.org/anime/gogoanime/info/${anime}`,
+          `https://consumet-api-q5mn.onrender.com/anime/gogoanime/info/${anime}`,
           { cache: "no-store" }
         );
         const data = await res.json();

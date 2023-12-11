@@ -5,7 +5,7 @@ export default async function Search({ params }) {
 
   async function getSearchData() {
     const res = await fetch(
-      `https://api.consumet.org/anime/gogoanime/${encodeURIComponent(query)}`,
+      `https://consumet-api-q5mn.onrender.com/anime/gogoanime/${encodeURIComponent(query)}`,
       { cache: "no-store" }
     );
     return res.json();
