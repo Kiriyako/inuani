@@ -159,6 +159,17 @@ body {
 	}
 }
 
+#animetitle{
+	font-size: 27px;
+	font-weight: bold;
+
+}
+#animetitle:hover {
+color: white;
+}
+#episodetitle{
+	font-size: 20px;
+}
 #image {
 	width: 250px;
 	margin-right: 20px;

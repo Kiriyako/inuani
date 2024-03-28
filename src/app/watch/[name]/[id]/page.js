@@ -125,11 +125,11 @@ export default function AnimePage({ params }) {
     <div id="main">
       <div id="app"></div>
 
-      <h2>
+      <text id="animetitle">
         {" "}
-        <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link> </h2> <h3> Episode{" "}
+        <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link> </text> <br></br> <text id="episodetitle"> Episode{" "}
         {findEpisodeNumber(watch)}
-      </h3>
+      </text>
 
       <div id="episodes">
         <h2>Episodes ({animeData?.totalEpisodes})</h2>
