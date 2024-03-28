@@ -7,7 +7,7 @@ export default function AnimePage({ params }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://consumet-api-q5mn.onrender.com/anime/gogoanime/info/${anime}`)
+    fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/info/${anime}`)
       .then((res) => res.json())
       .then((data) => setData(data));
   }, []);

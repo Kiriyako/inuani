@@ -1,9 +1,9 @@
 import Navbar from "./components/Navbar/nav";
 import "./globals.css";
-import { Noto_Sans } from "next/font/google";
+import { Roboto } from "next/font/google";
 import Footer from "./components/Footer/footer";
 import Script from "next/script";
-const roboto = Noto_Sans({ subsets: ["latin"], weight: "400" });
+const roboto = Roboto({ subsets: ["latin"], weight: "400" });
 
 export const metadata = {
   title: "inu - home",

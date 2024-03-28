@@ -21,7 +21,7 @@ export default function AnimePage({ params }) {
     async function getEpisodeData() {
       try {
         const res = await fetch(
-          `https://consumet-api-q5mn.onrender.com/anime/gogoanime/watch/${watch}`,
+          `https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/watch/${watch}`,
           { cache: "no-store" }
         );
         const data = await res.json();
@@ -35,7 +35,7 @@ export default function AnimePage({ params }) {
     async function getAniData() {
       try {
         const res = await fetch(
-          `https://consumet-api-q5mn.onrender.com/anime/gogoanime/info/${anime}`,
+          `https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/info/${anime}`,
           { cache: "no-store" }
         );
         const data = await res.json();
@@ -126,10 +126,10 @@ export default function AnimePage({ params }) {
       <div id="app"></div>
 
       <h2>
-        Currently watching{" "}
-        <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link> Episode{" "}
+        {" "}
+        <Link href={`/anime/${animeData?.id}`}>{animeData?.title}</Link> </h2> <h3> Episode{" "}
         {findEpisodeNumber(watch)}
-      </h2>
+      </h3>
 
       <div id="episodes">
         <h2>Episodes ({animeData?.totalEpisodes})</h2>
