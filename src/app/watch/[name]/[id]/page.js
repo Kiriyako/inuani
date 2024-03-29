@@ -59,7 +59,7 @@ export default function AnimePage({ params }) {
       }).use([
         ui({
           theme: {
-            primaryColor: "#58a9ff",
+            primaryColor: "rgb(231 170 227)",
           },
           screenshot: true,
           controlBar: { back: "always" },

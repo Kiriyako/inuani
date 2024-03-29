@@ -13,7 +13,9 @@ body {
 #inputsearch {
 	margin-left: auto;
 }
-
+.episode-box:hover{
+	opacity: 0.5;
+}
 .dog {
 	font-family: inherit;
 	background: transparent;
@@ -78,7 +80,7 @@ body {
 	height: 50px;
 	background-color: #0793ff00;
 	color: #fff;
-	border: 1px solid #58a9ff;
+	border: 1px solid rgb(231 170 227);
 	text-decoration: none;
 	line-height: 15px;
 }
