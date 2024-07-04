@@ -9,24 +9,35 @@ export default async function Page() {
     return res.json();
   }
 
+  function capitalizeWords(string) {
+    return string
+      .replace(/-/g, ' ')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
   const data = await getAnimeData();
 
   return (
     <div id="front">
       <div id="animegrid">
-        {data.results.map((anime) => (
-          <Link href={`/anime/${anime.id}`} key={anime.id}>
-            <div id="anime">
-              <img
-                width="250"
-                height="350"
-                alt={anime.title}
-                src={anime.image}
-              />
-              <h2>{anime.title}</h2>
-            </div>
-          </Link>
-        ))}
+        {data.results.map((anime) => {
+          const title = anime.title || capitalizeWords(anime.id);
+          return (
+            <Link href={`/anime/${anime.id}`} key={anime.id}>
+              <div id="anime">
+                <img
+                  width="250"
+                  height="350"
+                  alt={title}
+                  src={anime.image}
+                />
+                <h2>{title}</h2>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
