@@ -14,7 +14,7 @@ body {
 	margin-left: auto;
 }
 .episode-box:hover{
-	opacity: 0.5;
+	border: 1px solid rgb(255, 129, 247);
 }
 .dog {
 	font-family: inherit;
@@ -166,7 +166,7 @@ body {
 	font-weight: bold;
 
 }
-#animetitle:hover {
+#episodetitle:hover {
 color: white;
 }
 #episodetitle{
