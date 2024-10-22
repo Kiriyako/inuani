@@ -1,9 +1,9 @@
 import Navbar from "./components/Navbar/nav";
 import "./globals.css";
-import { Roboto } from "next/font/google";
+import { Manrope } from "next/font/google";
 import Footer from "./components/Footer/footer";
 import Script from "next/script";
-const roboto = Roboto({ subsets: ["latin"], weight: "400" });
+const roboto = Manrope({ subsets: ["latin"], weight: "400" });
 
 export const metadata = {
   title: "inu - home",

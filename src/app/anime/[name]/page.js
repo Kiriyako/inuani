@@ -37,7 +37,7 @@ export default function AnimePage({ params }) {
         </div>
       </div>
       <div id="episodes">
-        <h2>Episodes ({data.totalEpisodes})</h2>
+        <h2>Episodes [{data.totalEpisodes}]</h2>
         <div className="episodelist-container">
           <div id="episodelist" className="scroll-x">
             {data.episodes.map((ep) => (
