@@ -21,14 +21,15 @@ export default function AnimePage({ params }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const episodeRes = await fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/watch/${watch}`, { cache: "no const episodeData = await episodeRes.json();
+        const episodeRes = await fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/watch/${watch}`, { cache: "no-store" });
+        const episodeData = await episodeRes.json();
         const animeRes = await fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/info/${anime}`, { cache: "no-store" });
         const animeData = await animeRes.json();
 
         setEpisodes(episodeData);
         setAnimeData(animeData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetchin data:", error);
       }
     }
 
@@ -58,7 +59,7 @@ export default function AnimePage({ params }) {
         controlBar: { back: "always" },
         icons: {
           play: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
-          pause: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="4"/></svg>`,
+          pause: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
         },
       }),
       hls({ forceHLS: true }),
@@ -68,7 +69,7 @@ export default function AnimePage({ params }) {
 
     // Proxy the video source through the HLS proxy URL
     if (episodes.sources && episodes.sources.length > 0) {
-      const originalSource = episodes.sources[episodes.sources.length - 1].url;
+      originalSource = episodes.sources[episodes.sources.length - 1].url;
       const proxiedSource = `https://gogoanime-and-hianime-proxy.vercel.app/hls-proxy?url=${encodeURIComponent(originalSource)}`;
 
       setVideoSource(proxiedSource);
@@ -95,10 +96,10 @@ export default function AnimePage({ params }) {
     <div id="main">
       <div id="app"></div>
       <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
-      <br></br>
+      <br />
       <text id="episodetitle">
         <Link href={`/anime/${animeData.id}`}>{animeData.title}</Link>
-      </text> 
+      </text>
 
       <div id="episodes">
         <h2>Episodes ({animeData.totalEpisodes})</h2>
@@ -107,10 +108,10 @@ export default function AnimePage({ params }) {
             {animeData.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
-                  <h2 className="episode2>
+                  <h2 className="episode2">{ep.title}</h2> {/* Added ep.title to display episode title */}
                 </Link>
               </div>
-            ))}
+           ))}
           </div>
         </div>
       </div>
