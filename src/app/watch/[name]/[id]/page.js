@@ -21,8 +21,7 @@ export default function AnimePage({ params }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const episodeRes = await fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/watch/${watch}`, { cache: "no-store" });
-        const episodeData = await episodeRes.json();
+        const episodeRes = await fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/watch/${watch}`, { cache: "no const episodeData = await episodeRes.json();
         const animeRes = await fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/info/${anime}`, { cache: "no-store" });
         const animeData = await animeRes.json();
 
@@ -36,7 +35,7 @@ export default function AnimePage({ params }) {
     fetchData();
 
     return () => {
-      if (player && typeof player.destroy === 'function') {
+      if (player && typeof player.destroy === "function") {
         player.destroy();
       }
     };
@@ -59,17 +58,7 @@ export default function AnimePage({ params }) {
         controlBar: { back: "always" },
         icons: {
           play: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
-          pause: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
-          volume: [
-            `<svg viewBox="0 024 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`,
-          ],
-          fullscreen: [
-            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>`,
-            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>`,
-          ],
-          loop: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat-2"><path d="m2 9 3-3 3 3"/><path d="M13 18H7a2 2 0 0 1-2-2V6"/><path d="m22 15-3 3-3-3"/><path d="M11 6h6a2 2 0 0 1 2 2v10"/></svg>`,
-          playbackRate: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>`,
+          pause: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="4"/></svg>`,
         },
       }),
       hls({ forceHLS: true }),
@@ -77,20 +66,22 @@ export default function AnimePage({ params }) {
 
     newPlayer.create();
 
-    // Use the proxy URL format for the video source
+    // Proxy the video source through the HLS proxy URL
     if (episodes.sources && episodes.sources.length > 0) {
-      const sourceUrl = episodes.sources[episodes.sources.length - 1].url;
-      const proxyUrl = `https://gogoanime-and-hianime-proxy.vercel.app/hls-proxy?url=${encodeURIComponent(sourceUrl)}`;
-      setVideoSource(proxyUrl);
+      const originalSource = episodes.sources[episodes.sources.length - 1].url;
+      const proxiedSource = `https://gogoanime-and-hianime-proxy.vercel.app/hls-proxy?url=${encodeURIComponent(originalSource)}`;
+
+      setVideoSource(proxiedSource);
+
       newPlayer.changeSource({
-        src: proxyUrl,
+        src: proxiedSource,
       });
     }
 
     setPlayer(newPlayer);
 
     return () => {
-      if (newPlayer && typeof newPlayer.destroy === 'function') {
+      if (newPlayer && typeof newPlayer.destroy === "function") {
         newPlayer.destroy();
       }
     };
@@ -104,19 +95,19 @@ export default function AnimePage({ params }) {
     <div id="main">
       <div id="app"></div>
       <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
-      <br />
+      <br></br>
       <text id="episodetitle">
         <Link href={`/anime/${animeData.id}`}>{animeData.title}</Link>
-      </text>
+      </text> 
 
       <div id="episodes">
-        <h2>Episodes ({animeData.total})</h2>
+        <h2>Episodes ({animeData.totalEpisodes})</h2>
         <div className="episodelist-container">
           <div id="episodelist" className="scroll-x">
             {animeData.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
-                  <h2 className="episode-title">{ep.number}</h2>
+                  <h2 className="episode2>
                 </Link>
               </div>
             ))}
