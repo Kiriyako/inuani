@@ -61,7 +61,7 @@ export default function AnimePage({ params }) {
           play: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
           pause: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
           volume: [
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
+            `<svg viewBox="0 024 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
             `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`,
           ],
           fullscreen: [
@@ -77,10 +77,13 @@ export default function AnimePage({ params }) {
 
     newPlayer.create();
 
+    // Use the proxy URL format for the video source
     if (episodes.sources && episodes.sources.length > 0) {
-      setVideoSource(episodes.sources[episodes.sources.length - 1].url);
+      const sourceUrl = episodes.sources[episodes.sources.length - 1].url;
+      const proxyUrl = `https://gogoanime-and-hianime-proxy.vercel.app/hls-proxy?url=${encodeURIComponent(sourceUrl)}`;
+      setVideoSource(proxyUrl);
       newPlayer.changeSource({
-        src: episodes.sources[episodes.sources.length - 1].url,
+        src: proxyUrl,
       });
     }
 
@@ -101,13 +104,13 @@ export default function AnimePage({ params }) {
     <div id="main">
       <div id="app"></div>
       <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
-      <br></br>
+      <br />
       <text id="episodetitle">
         <Link href={`/anime/${animeData.id}`}>{animeData.title}</Link>
-      </text> 
+      </text>
 
       <div id="episodes">
-        <h2>Episodes ({animeData.totalEpisodes})</h2>
+        <h2>Episodes ({animeData.total})</h2>
         <div className="episodelist-container">
           <div id="episodelist" className="scroll-x">
             {animeData.episodes.map((ep) => (
