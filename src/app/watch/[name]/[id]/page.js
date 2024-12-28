@@ -79,7 +79,7 @@ export default function AnimePage({ params }) {
     
 if (episodes.sources && episodes.sources.length > 0) {
   // Modify the last source URL to use the proxy
-  const proxiedUrl = `https://gogoanime-and-hianime-proxy.vercel.app/hls-proxy?url=${encodeURIComponent(episodes.sources[episodes.sources.length - 1].url)}`;
+  const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/hls-proxy?url=${encodeURIComponent(episodes.sources[episodes.sources.length - 1].url)}`;
 
   setVideoSource(proxiedUrl);
   newPlayer.changeSource({
