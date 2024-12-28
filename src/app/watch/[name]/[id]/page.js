@@ -76,14 +76,18 @@ export default function AnimePage({ params }) {
     ]);
 
     newPlayer.create();
+    
+if (episodes.sources && episodes.sources.length > 0) {
+  // Modify the last source URL to use the proxy
+  const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/hls-proxy?url=${encodeURIComponent(episodes.sources[episodes.sources.length - 1].url)}`;
 
-    if (episodes.sources && episodes.sources.length > 0) {
-      setVideoSource(episodes.sources[episodes.sources.length - 1].url);
-      newPlayer.changeSource({
-        src: episodes.sources[episodes.sources.length - 1].url,
-      });
-    }
+  setVideoSource(proxiedUrl);
+  newPlayer.changeSource({
+    src: proxiedUrl,
+  });
+}
 
+    
     setPlayer(newPlayer);
 
     return () => {
@@ -122,4 +126,4 @@ export default function AnimePage({ params }) {
       </div>
     </div>
   );
-}
+            }
