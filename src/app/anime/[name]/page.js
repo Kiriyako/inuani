@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 
 export default function AnimePage({ params }) {
   const anime = params.name;
-
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -30,6 +29,18 @@ export default function AnimePage({ params }) {
         };
         setData(transformedData);
       });
+
+    // Load Eruda only in development from CDN
+    if (process.env.NODE_ENV === "development") {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/eruda";
+      script.async = true;
+      script.onload = () => {
+        // Initialize Eruda after script loads
+        window.eruda.init();
+      };
+      document.body.appendChild(script);
+    }
   }, [anime]);
 
   if (!data) {
@@ -47,7 +58,7 @@ export default function AnimePage({ params }) {
           <h2>
             {data.status} | {data.type} | {data.genres.join(", ")}
           </h2>
-          <div id="descriptionContainer" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+          <div id="descriptionContainer" style={{ maxHeight: "200px", overflowY: "auto" }}>
             <h2
               dangerouslySetInnerHTML={{
                 __html: data.description || "No description available",
@@ -59,8 +70,6 @@ export default function AnimePage({ params }) {
       <div id="episodes">
         <h2>Episodes [{data.totalEpisodes}]</h2>
         <div className="episodelist-container">
-              <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
           <div id="episodelist" className="scroll-x">
             {data.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
