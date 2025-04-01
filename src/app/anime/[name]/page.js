@@ -59,6 +59,8 @@ export default function AnimePage({ params }) {
       <div id="episodes">
         <h2>Episodes [{data.totalEpisodes}]</h2>
         <div className="episodelist-container">
+              <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
           <div id="episodelist" className="scroll-x">
             {data.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
