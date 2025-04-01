@@ -6,15 +6,20 @@ import hls from "@oplayer/hls";
 import Link from "next/link";
 
 export default function AnimePage({ params }) {
-  const anime = params.name;
-  const watch = params.id;
-  const [animeSlug, queryString] = params.id.split("?");
-const slug = new URLSearchParams(queryString).get("ep");
+  const [animeSlug, setAnimeSlug] = useState("");
+  const [episodeId, setEpisodeId] = useState("");
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
   const [videoSource, setVideoSource] = useState("");
   const [player, setPlayer] = useState(null);
   const [category, setCategory] = useState("sub");
+
+  useEffect(() => {
+    if (!params.id.includes("?ep=")) return;
+    const [slug, queryString] = params.id.split("?ep=");
+    setAnimeSlug(slug);
+    setEpisodeId(queryString);
+  }, [params.id]);
 
   const findEpisodeNumber = (episodeId) => {
     const episode = animeData?.episodes.find((ep) => ep.id === episodeId);
@@ -22,21 +27,22 @@ const slug = new URLSearchParams(queryString).get("ep");
   };
 
   useEffect(() => {
+    if (!animeSlug || !episodeId) return;
+    
     async function fetchData() {
       try {
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId${watch}?${slug}&category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${episodeId}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
 
         const animeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${anime}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${animeSlug}`,
           { cache: "no-store" }
         );
         const animeData = await animeRes.json();
 
-        // Transform the API response 
         const transformedData = {
           id: animeData.data.idMal.toString(),
           title: animeData.data.title.userPreferred,
@@ -49,7 +55,7 @@ const slug = new URLSearchParams(queryString).get("ep");
           episodes: animeData.data.episodesList.map((ep) => ({
             id: ep.id,
             number: ep.number,
-            url: `https://example.com/${anime}/${ep.id}`, 
+            url: `/watch/${animeSlug}?ep=${ep.id}`,
           })),
         };
 
@@ -67,7 +73,7 @@ const slug = new URLSearchParams(queryString).get("ep");
         player.destroy();
       }
     };
-  }, [anime, watch, category]);
+  }, [animeSlug, episodeId, category]);
 
   useEffect(() => {
     if (!animeData || episodes.length === 0) return;
@@ -75,7 +81,6 @@ const slug = new URLSearchParams(queryString).get("ep");
     const newPlayer = Player.make("#app", {
       source: { src: videoSource },
       defaultQuality: "1080p",
-      videoAttr: {},
     }).use([
       ui({
         theme: {
@@ -83,11 +88,11 @@ const slug = new URLSearchParams(queryString).get("ep");
         },
         controlBar: { back: "always" },
         icons: {
-          play: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
-          pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
+          play: `<svg viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='5 3 19 12 5 21 5 3'/></svg>`,
+          pause: `<svg viewBox='0 0 24 24' fill='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='4' height='16' x='6' y='4'/><rect width='4' height='16' x='14' y='4'/></svg>`,
           volume: [
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`
+            `<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'/><path d='M15.54 8.46a5 5 0 0 1 0 7.07'/><path d='M19.07 4.93a10 10 0 0 1 0 14.14'/></svg>`,
+            `<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'/><line x1='22' x2='16' y1='9' y2='15'/><line x1='16' x2='22' y1='9' y2='15'/></svg>`
           ],
         },
       }),
@@ -97,14 +102,9 @@ const slug = new URLSearchParams(queryString).get("ep");
     newPlayer.create();
 
     if (episodes.sources && episodes.sources.length > 0) {
-      const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(
-        episodes.sources[episodes.sources.length - 1].url
-      )}`;
-
+      const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(episodes.sources[episodes.sources.length - 1].url)}`;
       setVideoSource(proxiedUrl);
-      newPlayer.changeSource({
-        src: proxiedUrl,
-      });
+      newPlayer.changeSource({ src: proxiedUrl });
     }
 
     setPlayer(newPlayer);
@@ -126,7 +126,7 @@ const slug = new URLSearchParams(queryString).get("ep");
         {category === "sub" ? "Switch to Dub" : "Switch to Sub"}
       </button>
       <div id="app"></div>
-      <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
+      <text id="animetitle">Episode {findEpisodeNumber(episodeId)}</text>
       <br />
       <text id="episodetitle">
         <Link href={`/anime/${animeData.id}`}>{animeData.title}</Link>
@@ -137,7 +137,7 @@ const slug = new URLSearchParams(queryString).get("ep");
           <div id="episodelist" className="scroll-x">
             {animeData.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
+                <Link href={`/watch/${animeSlug}?ep=${ep.id}`} rel="noopener noreferrer">
                   <h2 className="episode-title">{ep.number}</h2>
                 </Link>
               </div>
@@ -147,4 +147,4 @@ const slug = new URLSearchParams(queryString).get("ep");
       </div>
     </div>
   );
-} 
+}
