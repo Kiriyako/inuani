@@ -146,4 +146,4 @@ export default function AnimePage({ params }) {
       </div>
     </div>
   );
-} can you sort this out the param id will look like this the-100-girlfriends-who-really-really-really-really-really-love-you-season-2-19435?ep=134998 please that is a string so please fix this 
+} 
