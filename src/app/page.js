@@ -3,7 +3,7 @@ import Link from "next/link";
 export default async function Page() {
   async function getAnimeData() {
     const res = await fetch(
-      `https://api-consumet-org-gamma-sage.vercel.app/meta/anilist/top`,
+      `https://api-consumet-org-gamma-sage.vercel.app/meta/anilist/trending`,
       { cache: "no-store" }
     );
     const rawData = await res.json();
