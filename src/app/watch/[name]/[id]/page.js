@@ -4,10 +4,14 @@ import Player from "@oplayer/core";
 import ui from "@oplayer/ui";
 import hls from "@oplayer/hls";
 import Link from "next/link";
+import { useRouter } from 'next/router';
 
-export default function AnimePage({ params }) {
-  const anime = params.name;
-  const watch = params.id;
+export default function AnimePage() {
+  const router = useRouter();
+  const { name, id } = router.query;
+
+  const anime = name;
+  const watch = id;
 
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
