@@ -10,7 +10,7 @@ export default function AnimePage({ params }) {
     // Fetch the API URL from environment variables
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    fetch(`${apiUrl}/anime/gogoanime/info/${anime}`)
+    fetch(`${apiUrl}/anime/info/${anime}`)
       .then((res) => res.json())
       .then((data) => {
         // Transform API data
