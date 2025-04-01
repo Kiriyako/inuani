@@ -8,19 +8,13 @@ import Link from "next/link";
 export default function AnimePage({ params }) {
   const anime = params.name;
   const watch = params.id;
-
-  // Extract episode slug
   const [animeSlug, queryString] = params.id.split("?");
-  const slug = new URLSearchParams(queryString).get("ep");
-
+  const slug = queryString ? new URLSearchParams(queryString).get("ep") : null;
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
   const [videoSource, setVideoSource] = useState("");
   const [player, setPlayer] = useState(null);
   const [category, setCategory] = useState("sub");
-  const [trigger, setTrigger] = useState(false); // Force re-fetch
-
-  console.log("Params:", { anime, watch, slug, category });
 
   const findEpisodeNumber = (episodeId) => {
     const episode = animeData?.episodes.find((ep) => ep.id === episodeId);
@@ -28,29 +22,38 @@ export default function AnimePage({ params }) {
   };
 
   useEffect(() => {
-    console.log("useEffect triggered!");
+    console.log("🔄 useEffect triggered!");
+    console.log("✅ Parameters received:", { anime, watch, slug });
 
     if (!anime || !watch || !slug) {
-      console.warn("Missing parameters, skipping fetch.");
+      console.warn("⚠️ Missing required parameters!");
+      console.warn("  - anime:", anime);
+      console.warn("  - watch:", watch);
+      console.warn("  - slug:", slug);
       return;
     }
 
     async function fetchData() {
       try {
         const watchApiUrl = `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${slug}&category=${category}&server=hd-2`;
-        console.log("Fetching watch data from:", watchApiUrl);
+        console.log("🌐 Fetching watch data from:", watchApiUrl);
 
         const episodeRes = await fetch(watchApiUrl, { cache: "no-store" });
+        if (!episodeRes.ok) throw new Error("Failed to fetch episode sources");
+
         const episodeData = await episodeRes.json();
-        console.log("Episode Data:", episodeData);
+        console.log("📺 Episode Data:", episodeData);
 
         const animeApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${anime}`;
-        console.log("Fetching anime data from:", animeApiUrl);
+        console.log("🌐 Fetching anime data from:", animeApiUrl);
 
         const animeRes = await fetch(animeApiUrl, { cache: "no-store" });
-        const animeData = await animeRes.json();
-        console.log("Anime Data:", animeData);
+        if (!animeRes.ok) throw new Error("Failed to fetch anime info");
 
+        const animeData = await animeRes.json();
+        console.log("🎬 Anime Data:", animeData);
+
+        // Transform API response
         const transformedData = {
           id: animeData.data.idMal.toString(),
           title: animeData.data.title.userPreferred,
@@ -70,7 +73,7 @@ export default function AnimePage({ params }) {
         setEpisodes(episodeData);
         setAnimeData(transformedData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("❌ Error fetching data:", error);
       }
     }
 
@@ -81,12 +84,13 @@ export default function AnimePage({ params }) {
         player.destroy();
       }
     };
-  }, [anime, watch, category, trigger]);
+  }, [anime, watch, slug, category]);
 
   useEffect(() => {
     if (!animeData || episodes.length === 0) return;
 
-    console.log("Initializing Player...");
+    console.log("🎥 Initializing OPlayer...");
+
     const newPlayer = Player.make("#app", {
       source: { src: videoSource },
       defaultQuality: "1080p",
@@ -102,7 +106,7 @@ export default function AnimePage({ params }) {
           pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
           volume: [
             `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`,
           ],
         },
       }),
@@ -116,7 +120,6 @@ export default function AnimePage({ params }) {
         episodes.sources[episodes.sources.length - 1].url
       )}`;
 
-      console.log("Setting video source:", proxiedUrl);
       setVideoSource(proxiedUrl);
       newPlayer.changeSource({ src: proxiedUrl });
     }
@@ -139,7 +142,6 @@ export default function AnimePage({ params }) {
       <button onClick={() => setCategory(category === "sub" ? "dub" : "sub")}>
         {category === "sub" ? "Switch to Dub" : "Switch to Sub"}
       </button>
-      <button onClick={() => setTrigger(!trigger)}>Retry Fetch</button>
       <div id="app"></div>
       <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
       <br />
