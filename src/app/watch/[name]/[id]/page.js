@@ -6,13 +6,22 @@ import hls from "@oplayer/hls";
 import Link from "next/link";
 
 export default function AnimePage({ params }) {
-  const anime = params.name;
-  const watch = params.id;
+  const animeSlugWithId = params.id; 
+  const [animeSlug, setAnimeSlug] = useState("");
+  const [episodeId, setEpisodeId] = useState("");
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
   const [videoSource, setVideoSource] = useState("");
   const [player, setPlayer] = useState(null);
   const [category, setCategory] = useState("sub");
+
+  // Extract anime slug and episode ID
+  useEffect(() => {
+    if (!animeSlugWithId.includes("?ep=")) return;
+    const [slug, queryString] = animeSlugWithId.split("?ep=");
+    setAnimeSlug(slug);
+    setEpisodeId(queryString);
+  }, [animeSlugWithId]);
 
   const findEpisodeNumber = (episodeId) => {
     const episode = animeData?.episodes.find((ep) => ep.id === episodeId);
@@ -20,21 +29,23 @@ export default function AnimePage({ params }) {
   };
 
   useEffect(() => {
+    if (!animeSlug || !episodeId) return;
+
     async function fetchData() {
       try {
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId${watch}?category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${episodeId}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
 
         const animeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${anime}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${animeSlug}`,
           { cache: "no-store" }
         );
         const animeData = await animeRes.json();
 
-        // Transform the API response 
+        // Transform the API response
         const transformedData = {
           id: animeData.data.idMal.toString(),
           title: animeData.data.title.userPreferred,
@@ -47,7 +58,7 @@ export default function AnimePage({ params }) {
           episodes: animeData.data.episodesList.map((ep) => ({
             id: ep.id,
             number: ep.number,
-            url: `https://example.com/${anime}/${ep.id}`, 
+            url: `https://example.com/${animeSlug}/${ep.id}`, 
           })),
         };
 
@@ -65,7 +76,7 @@ export default function AnimePage({ params }) {
         player.destroy();
       }
     };
-  }, [anime, watch, category]);
+  }, [animeSlug, episodeId, category]);
 
   useEffect(() => {
     if (!animeData || episodes.length === 0) return;
@@ -80,14 +91,6 @@ export default function AnimePage({ params }) {
           primaryColor: "rgb(231 170 227)",
         },
         controlBar: { back: "always" },
-        icons: {
-          play: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
-          pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
-          volume: [
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`
-          ],
-        },
       }),
       hls({ forceHLS: true }),
     ]);
@@ -110,7 +113,7 @@ export default function AnimePage({ params }) {
     return () => {
       if (newPlayer && typeof newPlayer.destroy === "function") {
         newPlayer.destroy();
-      }
+      };
     };
   }, [animeData, episodes]);
 
@@ -124,7 +127,7 @@ export default function AnimePage({ params }) {
         {category === "sub" ? "Switch to Dub" : "Switch to Sub"}
       </button>
       <div id="app"></div>
-      <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
+      <text id="animetitle">Episode {findEpisodeNumber(episodeId)}</text>
       <br />
       <text id="episodetitle">
         <Link href={`/anime/${animeData.id}`}>{animeData.title}</Link>
@@ -135,7 +138,7 @@ export default function AnimePage({ params }) {
           <div id="episodelist" className="scroll-x">
             {animeData.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
+                <Link href={`/watch/${animeSlug}?ep=${ep.id}`} rel="noopener noreferrer">
                   <h2 className="episode-title">{ep.number}</h2>
                 </Link>
               </div>
