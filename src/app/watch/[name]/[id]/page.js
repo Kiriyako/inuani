@@ -8,7 +8,8 @@ import Link from "next/link";
 export default function AnimePage({ params }) {
   const anime = params.name;
   const watch = params.id;
-  const slug = params.ep
+  const [animeSlug, queryString] = params.id.split("?");
+const slug = new URLSearchParams(queryString).get("ep");
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
   const [videoSource, setVideoSource] = useState("");
