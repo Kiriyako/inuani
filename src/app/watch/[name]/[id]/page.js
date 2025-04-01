@@ -29,10 +29,10 @@ export default function AnimePage({ params }) {
 
         console.log("Fetching episode with params:", { anime, watch, category });
 
-     const episodeRes = await fetch(
-  `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${encodeURIComponent(watch)}&category=${category}&server=hd-2`,
-  { cache: "no-store" }
-);
+        const episodeRes = await fetch(
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${encodeURIComponent(watch)}&category=${category}&server=hd-2`,
+          { cache: "no-store" }
+        );
 
         const episodeData = await episodeRes.json();
 
