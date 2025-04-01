@@ -3,14 +3,29 @@ import React, { useState, useEffect } from "react";
 
 export default function AnimePage({ params }) {
   const anime = params.name;
-
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://api-consumet-org-gamma-sage.vercel.app/anime/gogoanime/info/${anime}`)
+    fetch(`https://hianime-mapper-iv3g.vercel.app/anime/info/${anime}`)
       .then((res) => res.json())
-      .then((data) => setData(data));
-  }, []);
+      .then((apiData) => {
+        const transformedData = {
+          id: apiData.data.id.toString(),
+          title: apiData.data.title.english || apiData.data.title.romaji,
+          image: apiData.data.coverImage.extraLarge,
+          status: apiData.data.status,
+          type: apiData.data.format,
+          genres: apiData.data.genres,
+          description: apiData.data.description || "No description available",
+          totalEpisodes: apiData.data.episodes || 0,
+          episodes: apiData.data.episodesList.map((ep) => ({
+            id: ep.id.toString(),
+            number: ep.number,
+          })),
+        };
+        setData(transformedData);
+      });
+  }, [anime]);
 
   if (!data) {
     return null;
@@ -28,12 +43,12 @@ export default function AnimePage({ params }) {
             {data.status} | {data.type} | {data.genres.join(", ")}
           </h2>
           <div id="descriptionContainer" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-        <h2
-          dangerouslySetInnerHTML={{
-            __html: data.description || "No description available",
-          }}
-        ></h2>
-      </div>
+            <h2
+              dangerouslySetInnerHTML={{
+                __html: data.description,
+              }}
+            ></h2>
+          </div>
         </div>
       </div>
       <div id="episodes">
