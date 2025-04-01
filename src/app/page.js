@@ -39,6 +39,8 @@ export default async function Page() {
           </Link>
         ))}
       </div>
+          <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
     </div>
   );
 }
