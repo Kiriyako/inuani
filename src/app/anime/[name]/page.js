@@ -3,23 +3,28 @@ import React, { useState, useEffect } from "react";
 
 export default function AnimePage({ params }) {
   const anime = params.name;
+
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://hianime-mapper-six.vercel.app/anime/info/${anime}`)
+    // Fetch the API URL from environment variables
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    fetch(`${apiUrl}/anime/gogoanime/info/${anime}`)
       .then((res) => res.json())
-      .then((apiData) => {
+      .then((data) => {
+        // Transform API data
         const transformedData = {
-          id: apiData.data.id.toString(),
-          title: apiData.data.title.english || apiData.data.title.romaji,
-          image: apiData.data.coverImage.extraLarge,
-          status: apiData.data.status,
-          type: apiData.data.format,
-          genres: apiData.data.genres,
-          description: apiData.data.description || "No description available",
-          totalEpisodes: apiData.data.episodes || 0,
-          episodes: apiData.data.episodesList.map((ep) => ({
-            id: ep.id.toString(),
+          id: data.data.id.toString(),
+          title: data.data.title.userPreferred || data.data.title.english,
+          image: data.data.coverImage.large,
+          status: data.data.status,
+          type: data.data.format,
+          genres: data.data.genres,
+          description: data.data.description,
+          totalEpisodes: data.data.episodes,
+          episodes: data.data.episodesList.map((ep) => ({
+            id: ep.id,
             number: ep.number,
           })),
         };
@@ -45,7 +50,7 @@ export default function AnimePage({ params }) {
           <div id="descriptionContainer" style={{ maxHeight: '200px', overflowY: 'auto' }}>
             <h2
               dangerouslySetInnerHTML={{
-                __html: data.description,
+                __html: data.description || "No description available",
               }}
             ></h2>
           </div>
