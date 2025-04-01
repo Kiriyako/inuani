@@ -6,7 +6,7 @@ export default function AnimePage({ params }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`https://hianime-mapper-iv3g.vercel.app/anime/info/${anime}`)
+    fetch(`https://hianime-mapper-six.vercel.app/anime/info/${anime}`)
       .then((res) => res.json())
       .then((apiData) => {
         const transformedData = {
