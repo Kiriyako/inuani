@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from 'next/link';
 
 export default function AnimePage({ params }) {
   const anime = params.name;
@@ -73,9 +74,9 @@ export default function AnimePage({ params }) {
           <div id="episodelist" className="scroll-x">
             {data.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
-                <a href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
+                <Link href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
                   <h2 className="episode-title">{ep.number}</h2>
-                </a>
+               </Link>
               </div>
             ))}
           </div>
