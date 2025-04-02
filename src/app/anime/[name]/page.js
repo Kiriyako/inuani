@@ -6,32 +6,38 @@ export default function AnimePage({ params }) {
   const anime = params.name;
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+ useEffect(() => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    fetch(`${apiUrl}/anime/info/${anime}`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Transform API data
-        const transformedData = {
-          id: data.data.id.toString(),
-          title: data.data.title.userPreferred || data.data.title.english,
-          image: data.data.coverImage.large,
-          status: data.data.status,
-          type: data.data.format,
-          genres: data.data.genres,
-          description: data.data.description,
-          totalEpisodes: data.data.episodes,
-          episodes: data.data.episodesList.map((ep) => ({
-            id: ep.id.split('?')[0],  // Extract the part before the '?'
-            number: ep.number,
-            param: ep.episodeId,
-          })),
-        };
-        setData(transformedData);
-      });
-  }, [anime]);
+  fetch(`${apiUrl}/anime/info/${anime}`)
+    .then((res) => res.json())
+    .then((data) => {
+      // Check if episodesList is available and is an array
+      const episodesList = Array.isArray(data.data.episodesList) ? data.data.episodesList : [];
+
+      // Transform API data
+      const transformedData = {
+        id: data.data.id.toString(),
+        title: data.data.title.userPreferred || data.data.title.english,
+        image: data.data.coverImage.large,
+        status: data.data.status,
+        type: data.data.format,
+        genres: data.data.genres,
+        description: data.data.description,
+        totalEpisodes: data.data.episodes,
+        episodes: episodesList.map((ep) => ({
+          id: ep.id.split('?')[0],  // Extract the part before the '?'
+          number: ep.number,
+          param: ep.episodeId,
+        })),
+      };
+      setData(transformedData);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}, [anime]);
+
 
   if (!data) {
     return null;
