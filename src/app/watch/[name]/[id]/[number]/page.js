@@ -91,21 +91,24 @@ export default function AnimePage({ params }) {
     newPlayer.create();
 
     if (episodes.sources && episodes.sources.length > 0) {
+      // Using the proxy URL for the m3u8 source
       const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(
         episodes.sources[0].url
       )}`;
-      
-      // Extract subtitles from the API response
-      const subtitleTracks = episodes.tracks && episodes.tracks.length > 0
-        ? episodes.tracks.map((track) => ({
-            kind: "subtitles",
-            src: track.file,
-            srclang: track.label.toLowerCase().slice(0, 2),
-            label: track.label,
-            default: track.default || false,
-          }))
+
+      // Extract subtitles from the API response, making sure the structure is correct
+      const subtitleTracks = episodes.tracks
+        ? episodes.tracks
+            .filter(track => track.kind === "captions") // Only get caption tracks
+            .map((sub) => ({
+                kind: "subtitles",
+                src: sub.file,
+                srclang: sub.label.toLowerCase() || "en", // Default to English if no label is found
+                label: sub.label || "English", // Default to "English"
+                default: sub.default || false,
+              }))
         : [];
-      
+
       setVideoSource(proxiedUrl);
       newPlayer.changeSource({
         src: proxiedUrl,
