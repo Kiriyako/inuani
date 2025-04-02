@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function AnimePage({ params }) {
   const anime = params.name;
   const watch = params.id;
-  
+  const slug = params.ep
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
   const [videoSource, setVideoSource] = useState("");
@@ -24,7 +24,7 @@ export default function AnimePage({ params }) {
     async function fetchData() {
       try {
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}api/v2/hianime/episode/sources?animeEpisodeId${watch}?category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId${watch}?${slug}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
@@ -146,4 +146,4 @@ export default function AnimePage({ params }) {
       </div>
     </div>
   );
-}
+} 
