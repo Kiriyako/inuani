@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function AnimePage({ params }) {
   const anime = params.name;
   const watch = params.id;
-  const slug = params.number
+  const slug = params.number;
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
   const [videoSource, setVideoSource] = useState("");
@@ -24,7 +24,7 @@ export default function AnimePage({ params }) {
     async function fetchData() {
       try {
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}?ep=${slug}&category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}&ep=${slug}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
@@ -35,7 +35,6 @@ export default function AnimePage({ params }) {
         );
         const animeData = await animeRes.json();
 
-        // Transform the API response 
         const transformedData = {
           id: animeData.data.idMal.toString(),
           title: animeData.data.title.userPreferred,
@@ -48,7 +47,7 @@ export default function AnimePage({ params }) {
           episodes: animeData.data.episodesList.map((ep) => ({
             id: ep.id,
             number: ep.number,
-            url: `https://example.com/${anime}/${ep.id}`, 
+            url: `https://example.com/${anime}/${ep.id}`,
           })),
         };
 
@@ -72,37 +71,45 @@ export default function AnimePage({ params }) {
     if (!animeData || episodes.length === 0) return;
 
     const newPlayer = Player.make("#app", {
-      source: { src: videoSource },
-      defaultQuality: "1080p",
+      source: { src: videoSource, type: "hls" },
       videoAttr: {},
     }).use([
       ui({
-        theme: {
-          primaryColor: "rgb(231 170 227)",
-        },
+        theme: { primaryColor: "rgb(231 170 227)" },
         controlBar: { back: "always" },
         icons: {
           play: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
-          pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
+          pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></svg>`,
           volume: [
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
-            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
           ],
         },
       }),
-      hls({ forceHLS: true }),
+      hls({ forceHLS: true, autoQuality: true }),
     ]);
 
     newPlayer.create();
 
     if (episodes.sources && episodes.sources.length > 0) {
       const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(
-        episodes.sources[episodes.sources.length - 1].url
+        episodes.sources[0].url
       )}`;
-
+      
+      
+      const subtitleTracks = episodes.subtitles
+        ? episodes.subtitles.map((sub) => ({
+            kind: "subtitles",
+            src: sub.url,
+            srclang: sub.lang || "en",
+            label: sub.lang || "English",
+            default: sub.lang === "en", 
+          }))
+        : [];
+      
       setVideoSource(proxiedUrl);
       newPlayer.changeSource({
         src: proxiedUrl,
+        tracks: subtitleTracks,
       });
     }
 
@@ -146,4 +153,4 @@ export default function AnimePage({ params }) {
       </div>
     </div>
   );
-} 
+}
