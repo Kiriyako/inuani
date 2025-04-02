@@ -112,7 +112,10 @@ export default function AnimePage({ params }) {
               }))
         : [];
 
+      // Set the video source for the player
       setVideoSource(proxiedUrl);
+
+      // Update the player with the new video source and subtitle tracks
       newPlayer.changeSource({
         src: proxiedUrl,
         tracks: subtitleTracks,
