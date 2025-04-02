@@ -5,6 +5,39 @@ import ui from "@oplayer/ui";
 import hls from "@oplayer/hls";
 import Link from "next/link";
 
+// Helper function to apply video source and subtitles
+const applyVideoSourceAndSubtitles = (player, videoSource, episodes) => {
+  console.log("applyVideoSourceAndSubtitles called");
+
+  if (!player || !videoSource || !episodes) {
+    console.error("Player, videoSource, or episodes data is missing");
+    return;
+  }
+
+  console.log("Video Source:", videoSource);
+
+  // Create subtitle tracks
+  const subtitleTracks = episodes.tracks
+    ? episodes.tracks.map((track) => ({
+        kind: "subtitles",
+        src: track.file,
+        srclang: track.label.toLowerCase() || "en",
+        label: track.label || "English",
+        default: track.default || false,
+      }))
+    : [];
+
+  console.log("Subtitle Tracks:", subtitleTracks);
+
+  // Apply the source and subtitle tracks to the player
+  player.changeSource({
+    src: videoSource,
+    tracks: subtitleTracks,
+  });
+
+  console.log("Video source and subtitles applied.");
+};
+
 export default function AnimePage({ params }) {
   const anime = params.name;
   const watch = params.id;
@@ -30,6 +63,7 @@ export default function AnimePage({ params }) {
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
+        console.log("Episode Data Fetched:", episodeData);
 
         // Fetch anime data
         const animeRes = await fetch(
@@ -37,8 +71,8 @@ export default function AnimePage({ params }) {
           { cache: "no-store" }
         );
         const animeData = await animeRes.json();
-
         console.log("Anime Data Fetched:", animeData);
+
         // Transform the data into a usable format
         const transformedData = {
           id: animeData.data.idMal.toString(),
@@ -77,7 +111,10 @@ export default function AnimePage({ params }) {
     console.log("useEffect triggered. Anime Data:", animeData);
     console.log("Episodes:", episodes);
 
-    if (!animeData || episodes.length === 0) return;
+    if (!animeData || episodes.length === 0) {
+      console.error("No anime data or episodes found.");
+      return;
+    }
 
     // Initialize player
     const newPlayer = Player.make("#app", {
@@ -107,26 +144,16 @@ export default function AnimePage({ params }) {
       const sourceUrl = episodes.sources[0].url;
       console.log("Raw Video Source URL:", sourceUrl); // Log the raw source
 
+      // Proxy the URL before using it
       const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}`;
       console.log("Proxied Video Source URL:", proxiedUrl); // Log the proxied URL
 
+      // Set the proxied video URL
       setVideoSource(proxiedUrl); // Set videoSource state
 
-      // Check if the videoSource is set and update the player source
-      if (proxiedUrl) {
-        console.log("Setting Video Source:", proxiedUrl);
-        newPlayer.changeSource({
-          src: proxiedUrl,
-          tracks: episodes.tracks ? episodes.tracks.map((track) => ({
-            kind: "subtitles",
-            src: track.file,
-            srclang: track.label.toLowerCase() || "en",
-            label: track.label || "English",
-            default: track.default || false,
-          })) : [],
-        });
-        console.log("Player Source Updated:", proxiedUrl);
-      }
+      // Call the helper function to apply the video source and subtitles
+      applyVideoSourceAndSubtitles(newPlayer, proxiedUrl, episodes);
+      console.log("Player Source Updated:", proxiedUrl);
     }
 
     setPlayer(newPlayer);
