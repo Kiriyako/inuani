@@ -26,6 +26,7 @@ export default function AnimePage({ params }) {
           episodes: data.data.episodesList.map((ep) => ({
             id: ep.id,
             number: ep.number,
+            param: ep.episodeId,
           })),
         };
         setData(transformedData);
@@ -74,7 +75,7 @@ export default function AnimePage({ params }) {
           <div id="episodelist" className="scroll-x">
             {data.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`} rel="noopener noreferrer">
+                <Link href={`/watch/${anime}/${ep.id}/${ep.param}`} rel="noopener noreferrer">
                   <h2 className="episode-title">{ep.number}</h2>
                </Link>
               </div>
