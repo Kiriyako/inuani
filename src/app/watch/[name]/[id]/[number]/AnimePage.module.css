@@ -1,0 +1,24 @@
+.thumbnail {
+    position: relative;
+  }
+  
+  .currentEpisode {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .currentText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px; 
+    font-weight: bold;
+    color: white; 
+    background-color: rgba(34, 34, 34, 0.7); 
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
+  
