@@ -139,24 +139,30 @@ export default function AnimePage({ params }) {
 
     newPlayer.create();
 
-    // Ensure episode data exists and videoSource is set
-    if (episodes.sources && episodes.sources.length > 0) {
-      const sourceUrl = episodes.sources[0].url;
-      console.log("Raw Video Source URL:", sourceUrl); // Log the raw source
-
-      // Proxy the URL before using it
-      const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}`;
-      console.log("Proxied Video Source URL:", proxiedUrl); // Log the proxied URL
-
-      // Set the proxied video URL
-      setVideoSource(proxiedUrl); // Set videoSource state
-
-      // Call the helper function to apply the video source and subtitles
-      applyVideoSourceAndSubtitles(newPlayer, proxiedUrl, episodes);
-      console.log("Player Source Updated:", proxiedUrl);
-    }
-
+    // Store the initialized player
     setPlayer(newPlayer);
+
+    // Wait until player is fully initialized before applying the video source
+    newPlayer.on('ready', () => {
+      console.log("Player is ready");
+
+      // Ensure episode data exists and videoSource is set
+      if (episodes.sources && episodes.sources.length > 0) {
+        const sourceUrl = episodes.sources[0].url;
+        console.log("Raw Video Source URL:", sourceUrl); // Log the raw source
+
+        // Proxy the URL before using it
+        const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}`;
+        console.log("Proxied Video Source URL:", proxiedUrl); // Log the proxied URL
+
+        // Set the proxied video URL
+        setVideoSource(proxiedUrl); // Set videoSource state
+
+        // Call the helper function to apply the video source and subtitles
+        applyVideoSourceAndSubtitles(newPlayer, proxiedUrl, episodes);
+        console.log("Player Source Updated:", proxiedUrl);
+      }
+    });
 
     return () => {
       if (newPlayer && typeof newPlayer.destroy === "function") {
