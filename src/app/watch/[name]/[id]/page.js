@@ -6,7 +6,6 @@ import hls from "@oplayer/hls";
 import Link from "next/link";
 
 export default function AnimePage({ params }) {
-  const anime = params.name;
   const [watch, setWatch] = useState("");
   const [episodes, setEpisodes] = useState([]);
   const [animeData, setAnimeData] = useState(null);
@@ -15,10 +14,10 @@ export default function AnimePage({ params }) {
   const [category, setCategory] = useState("sub");
 
   useEffect(() => {
-    const urlParts = params.id.split("?ep=");
-    if (urlParts.length === 2) {
-      setWatch(urlParts[1]);
-    }
+    if (!params.id) return;
+    const url = new URL("https://dummy.com/" + params.id);
+    const episodeId = url.searchParams.get("ep");
+    if (episodeId) setWatch(episodeId);
   }, [params.id]);
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export default function AnimePage({ params }) {
         const episodeData = await episodeRes.json();
 
         const animeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${anime}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${params.name}`,
           { cache: "no-store" }
         );
         const animeData = await animeRes.json();
@@ -61,7 +60,7 @@ export default function AnimePage({ params }) {
     }
 
     fetchData();
-  }, [anime, watch, category]);
+  }, [params.name, watch, category]);
 
   useEffect(() => {
     if (!animeData || episodes.length === 0) return;
@@ -122,7 +121,7 @@ export default function AnimePage({ params }) {
           <div id="episodelist" className="scroll-x">
             {animeData.episodes.map((ep) => (
               <div className="episode-box" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}`}>
+                <Link href={`/watch/${params.name}?ep=${ep.id}`}>
                   <h2 className="episode-title">{ep.number}</h2>
                 </Link>
               </div>
