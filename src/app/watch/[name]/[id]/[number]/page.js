@@ -23,9 +23,10 @@ export default function AnimePage({ params }) {
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log("Fetching episode data...");
         // Fetch episode data
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}&ep=${slug}&category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}?ep=${slug}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
@@ -37,6 +38,7 @@ export default function AnimePage({ params }) {
         );
         const animeData = await animeRes.json();
 
+        console.log("Anime Data Fetched:", animeData);
         // Transform the data into a usable format
         const transformedData = {
           id: animeData.data.idMal.toString(),
@@ -72,10 +74,10 @@ export default function AnimePage({ params }) {
   }, [anime, watch, category]);
 
   useEffect(() => {
-    if (!animeData || episodes.length === 0) return;
-
-    console.log("Anime Data:", animeData);
+    console.log("useEffect triggered. Anime Data:", animeData);
     console.log("Episodes:", episodes);
+
+    if (!animeData || episodes.length === 0) return;
 
     // Initialize player
     const newPlayer = Player.make("#app", {
@@ -103,33 +105,27 @@ export default function AnimePage({ params }) {
     // Ensure episode data exists and videoSource is set
     if (episodes.sources && episodes.sources.length > 0) {
       const sourceUrl = episodes.sources[0].url;
-
-      // Log the raw video source URL
-      console.log("Raw Video Source URL:", sourceUrl);
+      console.log("Raw Video Source URL:", sourceUrl); // Log the raw source
 
       const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}`;
+      console.log("Proxied Video Source URL:", proxiedUrl); // Log the proxied URL
 
-      // Log the proxied URL
-      console.log("Proxied Video Source URL:", proxiedUrl);
+      setVideoSource(proxiedUrl); // Set videoSource state
 
-      setVideoSource(proxiedUrl);
-
-      // Wait for videoSource to be set and then update the player source
-      if (videoSource) {
-        console.log("Setting Video Source:", videoSource);
-        
-        // Update the player with the new source and subtitles
+      // Check if the videoSource is set and update the player source
+      if (proxiedUrl) {
+        console.log("Setting Video Source:", proxiedUrl);
         newPlayer.changeSource({
-          src: videoSource,
+          src: proxiedUrl,
           tracks: episodes.tracks ? episodes.tracks.map((track) => ({
             kind: "subtitles",
             src: track.file,
             srclang: track.label.toLowerCase() || "en",
             label: track.label || "English",
             default: track.default || false,
-          })) : []
+          })) : [],
         });
-        console.log("Player Source Updated:", videoSource);
+        console.log("Player Source Updated:", proxiedUrl);
       }
     }
 
