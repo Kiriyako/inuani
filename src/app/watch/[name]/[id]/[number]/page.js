@@ -23,18 +23,21 @@ export default function AnimePage({ params }) {
   useEffect(() => {
     async function fetchData() {
       try {
+        // Fetch episode data
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}?ep=${slug}&category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}&ep=${slug}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
 
+        // Fetch anime data
         const animeRes = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/anime/info/${anime}`,
           { cache: "no-store" }
         );
         const animeData = await animeRes.json();
 
+        // Transform the data into a usable format
         const transformedData = {
           id: animeData.data.idMal.toString(),
           title: animeData.data.title.userPreferred,
@@ -51,6 +54,7 @@ export default function AnimePage({ params }) {
           })),
         };
 
+        // Set state with fetched data
         setEpisodes(episodeData);
         setAnimeData(transformedData);
       } catch (error) {
@@ -69,6 +73,10 @@ export default function AnimePage({ params }) {
 
   useEffect(() => {
     if (!animeData || episodes.length === 0) return;
+
+    // Debugging log to see the data we have
+    console.log("Anime Data:", animeData);
+    console.log("Episodes:", episodes);
 
     const newPlayer = Player.make("#app", {
       source: { src: videoSource, type: "hls" },
@@ -91,6 +99,9 @@ export default function AnimePage({ params }) {
     newPlayer.create();
 
     if (episodes.sources && episodes.sources.length > 0) {
+      // Log the raw source URL from the API response
+      console.log("Raw Video Source URL:", episodes.sources[0].url);
+
       // Using the proxy URL for the m3u8 source
       const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(
         episodes.sources[0].url
