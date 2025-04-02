@@ -48,7 +48,7 @@ export default function AnimePage({ params }) {
         console.log("Fetching episode data...");
         // Fetch episode data
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}?ep=${slug}&category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}&ep=${slug}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
@@ -155,6 +155,11 @@ export default function AnimePage({ params }) {
 
   useEffect(() => {
     console.log("Initializing the player...");
+    if (!document.getElementById("app")) {
+      console.error("The #app element doesn't exist in the DOM.");
+      return;
+    }
+
     // Initialize player only when everything is ready
     const newPlayer = Player.make("#app", {
       source: { src: videoSource, type: "hls" },
@@ -195,7 +200,7 @@ export default function AnimePage({ params }) {
       <button onClick={() => setCategory(category === "sub" ? "dub" : "sub")}>
         {category === "sub" ? "Switch to Dub" : "Switch to Sub"}
       </button>
-      <div id="app"></div>
+      <div id="app"></div> {/* Ensure this element is here before initialization */}
       <text id="animetitle">Episode {findEpisodeNumber(watch)}</text>
       <br />
       <text id="episodetitle">
