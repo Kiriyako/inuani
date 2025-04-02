@@ -7,7 +7,7 @@ export default function AnimePage({ params }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    // Fetch the API URL from environment variables
+    
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     fetch(`${apiUrl}/anime/info/${anime}`)
@@ -24,25 +24,13 @@ export default function AnimePage({ params }) {
           description: data.data.description,
           totalEpisodes: data.data.episodes,
           episodes: data.data.episodesList.map((ep) => ({
-            id: ep.id,
+            id: ep.id.split('?')[0],  // Extract the part before the '?'
             number: ep.number,
             param: ep.episodeId,
           })),
         };
         setData(transformedData);
       });
-
-    // Load Eruda only in development from CDN
-    if (process.env.NODE_ENV === "development") {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/eruda";
-      script.async = true;
-      script.onload = () => {
-        // Initialize Eruda after script loads
-        window.eruda.init();
-      };
-      document.body.appendChild(script);
-    }
   }, [anime]);
 
   if (!data) {
@@ -77,7 +65,7 @@ export default function AnimePage({ params }) {
               <div className="episode-box" key={ep.id}>
                 <Link href={`/watch/${anime}/${ep.id}/${ep.param}`} rel="noopener noreferrer">
                   <h2 className="episode-title">{ep.number}</h2>
-               </Link>
+                </Link>
               </div>
             ))}
           </div>
