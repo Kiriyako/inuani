@@ -6,32 +6,20 @@ import hls from "@oplayer/hls";
 import Link from "next/link";
 
 // Helper function to apply video source and subtitles
-const applyVideoSourceAndSubtitles = (player, videoSource, episodes) => {
+const applyVideoSourceAndSubtitles = (player, proxiedUrl, subtitleTracks) => {
   console.log("applyVideoSourceAndSubtitles called");
 
-  if (!player || !videoSource || !episodes) {
-    console.error("Player, videoSource, or episodes data is missing");
+  if (!player || !proxiedUrl || !subtitleTracks) {
+    console.error("Player, proxiedUrl, or subtitleTracks data is missing");
     return;
   }
 
-  console.log("Video Source:", videoSource);
-
-  // Create subtitle tracks
-  const subtitleTracks = episodes.tracks
-    ? episodes.tracks.map((track) => ({
-        kind: "subtitles",
-        src: track.file,
-        srclang: track.label.toLowerCase() || "en",
-        label: track.label || "English",
-        default: track.default || false,
-      }))
-    : [];
-
+  console.log("Proxied Video Source:", proxiedUrl);
   console.log("Subtitle Tracks:", subtitleTracks);
 
   // Apply the source and subtitle tracks to the player
   player.changeSource({
-    src: videoSource,
+    src: proxiedUrl,
     tracks: subtitleTracks,
   });
 
@@ -47,6 +35,7 @@ export default function AnimePage({ params }) {
   const [videoSource, setVideoSource] = useState("");
   const [player, setPlayer] = useState(null);
   const [category, setCategory] = useState("sub");
+  const [isPlayerReady, setIsPlayerReady] = useState(false); // Flag to check player readiness
 
   const findEpisodeNumber = (episodeId) => {
     const episode = animeData?.episodes.find((ep) => ep.id === episodeId);
@@ -116,7 +105,57 @@ export default function AnimePage({ params }) {
       return;
     }
 
-    // Initialize player
+    // Fetch video source and captions
+    const fetchVideoData = async () => {
+      console.log("Fetching video source and captions...");
+
+      // Wait until we get the video source and caption data
+      const episodeSource = episodes.sources && episodes.sources[0] ? episodes.sources[0].url : null;
+      const episodeTracks = episodes.tracks || [];
+
+      if (episodeSource) {
+        console.log("Raw Video Source URL:", episodeSource); // Log the raw source
+
+        // Proxy the video source URL
+        const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(episodeSource)}`;
+        console.log("Proxied Video Source URL:", proxiedUrl); // Log the proxied URL
+
+        setVideoSource(proxiedUrl); // Set video source state
+
+        // Create subtitle tracks
+        const subtitleTracks = episodeTracks.map((track) => ({
+          kind: "subtitles",
+          src: track.file,
+          srclang: track.label.toLowerCase() || "en",
+          label: track.label || "English",
+          default: track.default || false,
+        }));
+
+        console.log("Subtitle Tracks:", subtitleTracks);
+
+        // Initialize the player now that everything is ready
+        if (player) {
+          console.log("Initializing Player with Source and Captions...");
+          applyVideoSourceAndSubtitles(player, proxiedUrl, subtitleTracks);
+          setIsPlayerReady(true); // Mark the player as ready
+        } else {
+          console.error("Player is not initialized yet.");
+        }
+      } else {
+        console.error("No episode source found.");
+      }
+    };
+
+    // Only call fetchVideoData if the anime data and episodes are available
+    if (animeData && episodes.length > 0) {
+      fetchVideoData();
+    }
+
+  }, [animeData, episodes, player]);
+
+  useEffect(() => {
+    console.log("Initializing the player...");
+    // Initialize player only when everything is ready
     const newPlayer = Player.make("#app", {
       source: { src: videoSource, type: "hls" },
       videoAttr: {},
@@ -138,38 +177,14 @@ export default function AnimePage({ params }) {
     console.log("Player Initialized:", newPlayer);
 
     newPlayer.create();
-
-    // Store the initialized player
     setPlayer(newPlayer);
-
-    // Wait until player is fully initialized before applying the video source
-    newPlayer.on('ready', () => {
-      console.log("Player is ready");
-
-      // Ensure episode data exists and videoSource is set
-      if (episodes.sources && episodes.sources.length > 0) {
-        const sourceUrl = episodes.sources[0].url;
-        console.log("Raw Video Source URL:", sourceUrl); // Log the raw source
-
-        // Proxy the URL before using it
-        const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}`;
-        console.log("Proxied Video Source URL:", proxiedUrl); // Log the proxied URL
-
-        // Set the proxied video URL
-        setVideoSource(proxiedUrl); // Set videoSource state
-
-        // Call the helper function to apply the video source and subtitles
-        applyVideoSourceAndSubtitles(newPlayer, proxiedUrl, episodes);
-        console.log("Player Source Updated:", proxiedUrl);
-      }
-    });
 
     return () => {
       if (newPlayer && typeof newPlayer.destroy === "function") {
         newPlayer.destroy();
       }
     };
-  }, [animeData, episodes, videoSource]);
+  }, [videoSource]);
 
   if (!animeData) {
     return <div>Now Loading...</div>;
