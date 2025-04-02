@@ -78,6 +78,7 @@ export default function AnimePage({ params }) {
     console.log("Anime Data:", animeData);
     console.log("Episodes:", episodes);
 
+    // Initialize player
     const newPlayer = Player.make("#app", {
       source: { src: videoSource, type: "hls" },
       videoAttr: {},
@@ -95,6 +96,9 @@ export default function AnimePage({ params }) {
       }),
       hls({ forceHLS: true, autoQuality: true }),
     ]);
+
+    // Make sure the player is created and log it
+    console.log("Player Initialized:", newPlayer);
 
     newPlayer.create();
 
@@ -126,7 +130,11 @@ export default function AnimePage({ params }) {
       // Set the video source for the player
       setVideoSource(proxiedUrl);
 
+      // Log the player state to ensure it is being updated
+      console.log("Video Source Set:", proxiedUrl);
+
       // Update the player with the new video source and subtitle tracks
+      console.log("Updating Player Source...");
       newPlayer.changeSource({
         src: proxiedUrl,
         tracks: subtitleTracks,
