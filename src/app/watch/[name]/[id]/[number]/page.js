@@ -25,7 +25,7 @@ export default function AnimePage({ params }) {
       try {
         // Fetch episode data
         const episodeRes = await fetch(
-          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}?ep=${slug}&category=${category}&server=hd-2`,
+          `${process.env.NEXT_PUBLIC_ANIME_WATCH_API_URL}/api/v2/hianime/episode/sources?animeEpisodeId=${watch}&ep=${slug}&category=${category}&server=hd-2`,
           { cache: "no-store" }
         );
         const episodeData = await episodeRes.json();
@@ -74,7 +74,6 @@ export default function AnimePage({ params }) {
   useEffect(() => {
     if (!animeData || episodes.length === 0) return;
 
-    // Debugging log to see the data we have
     console.log("Anime Data:", animeData);
     console.log("Episodes:", episodes);
 
@@ -97,48 +96,41 @@ export default function AnimePage({ params }) {
       hls({ forceHLS: true, autoQuality: true }),
     ]);
 
-    // Make sure the player is created and log it
     console.log("Player Initialized:", newPlayer);
 
     newPlayer.create();
 
+    // Ensure episode data exists and videoSource is set
     if (episodes.sources && episodes.sources.length > 0) {
-      // Log the raw source URL from the API response
-      console.log("Raw Video Source URL:", episodes.sources[0].url);
+      const sourceUrl = episodes.sources[0].url;
 
-      // Using the proxy URL for the m3u8 source
-      const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(
-        episodes.sources[0].url
-      )}`;
+      // Log the raw video source URL
+      console.log("Raw Video Source URL:", sourceUrl);
 
-      // Log the proxied m3u8 URL to the console
-      console.log("Proxied m3u8 Source:", proxiedUrl);
+      const proxiedUrl = `https://gogoanime-and-hianime-proxy-nn.vercel.app/m3u8-proxy?url=${encodeURIComponent(sourceUrl)}`;
 
-      // Extract subtitles from the API response, making sure the structure is correct
-      const subtitleTracks = episodes.tracks
-        ? episodes.tracks
-            .filter(track => track.kind === "captions") // Only get caption tracks
-            .map((sub) => ({
-                kind: "subtitles",
-                src: sub.file,
-                srclang: sub.label.toLowerCase() || "en", // Default to English if no label is found
-                label: sub.label || "English", // Default to "English"
-                default: sub.default || false,
-              }))
-        : [];
+      // Log the proxied URL
+      console.log("Proxied Video Source URL:", proxiedUrl);
 
-      // Set the video source for the player
       setVideoSource(proxiedUrl);
 
-      // Log the player state to ensure it is being updated
-      console.log("Video Source Set:", proxiedUrl);
-
-      // Update the player with the new video source and subtitle tracks
-      console.log("Updating Player Source...");
-      newPlayer.changeSource({
-        src: proxiedUrl,
-        tracks: subtitleTracks,
-      });
+      // Wait for videoSource to be set and then update the player source
+      if (videoSource) {
+        console.log("Setting Video Source:", videoSource);
+        
+        // Update the player with the new source and subtitles
+        newPlayer.changeSource({
+          src: videoSource,
+          tracks: episodes.tracks ? episodes.tracks.map((track) => ({
+            kind: "subtitles",
+            src: track.file,
+            srclang: track.label.toLowerCase() || "en",
+            label: track.label || "English",
+            default: track.default || false,
+          })) : []
+        });
+        console.log("Player Source Updated:", videoSource);
+      }
     }
 
     setPlayer(newPlayer);
@@ -148,7 +140,7 @@ export default function AnimePage({ params }) {
         newPlayer.destroy();
       }
     };
-  }, [animeData, episodes]);
+  }, [animeData, episodes, videoSource]);
 
   if (!animeData) {
     return <div>Now Loading...</div>;
