@@ -96,6 +96,9 @@ export default function AnimePage({ params }) {
         episodes.sources[0].url
       )}`;
 
+      // Log the proxied m3u8 URL to the console
+      console.log("Proxied m3u8 Source:", proxiedUrl);
+
       // Extract subtitles from the API response, making sure the structure is correct
       const subtitleTracks = episodes.tracks
         ? episodes.tracks
