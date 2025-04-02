@@ -25,8 +25,7 @@ export default function RootLayout({ children }) {
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-H2CPPMFKCF"
         />
-            <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+           
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
@@ -35,6 +34,9 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-H2CPPMFKCF');
           `}
         </Script>
+          <Script src="https://cdn.jsdelivr.net/npm/eruda"></Script>
+           <Script src="https://work-nu-tawny.vercel.app/eruda.js"></Script>
+          
         <Navbar />
         {children}
         <Footer />
