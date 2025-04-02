@@ -95,14 +95,14 @@ export default function AnimePage({ params }) {
         episodes.sources[0].url
       )}`;
       
-      
-      const subtitleTracks = episodes.subtitles
-        ? episodes.subtitles.map((sub) => ({
+      // Extract subtitles from the API response
+      const subtitleTracks = episodes.tracks && episodes.tracks.length > 0
+        ? episodes.tracks.map((track) => ({
             kind: "subtitles",
-            src: sub.url,
-            srclang: sub.lang || "en",
-            label: sub.lang || "English",
-            default: sub.lang === "en", 
+            src: track.file,
+            srclang: track.label.toLowerCase().slice(0, 2),
+            label: track.label,
+            default: track.default || false,
           }))
         : [];
       
