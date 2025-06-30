@@ -9,11 +9,40 @@ body {
 	display: flex;
 	align-items: center;
 }
+#banner {
+	width: 100%;
+	max-height: 220px;
+	overflow: hidden;
+	border-radius: 15px;
+	margin-bottom: 30px;
+	box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+	position: relative;
+}
+
+#banner img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 15px;
+	transition: transform 0.3s ease;
+}
+
+#banner:hover img {
+	transform: scale(1.02);
+}
+#banner::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+	border-radius: 15px;
+}
 
 #inputsearch {
 	margin-left: auto;
 }
-.episode-box:hover{
+.episode-box:hover {
 	border: 1px solid rgb(255, 129, 247);
 }
 .dog {
@@ -85,39 +114,43 @@ body {
 	line-height: 15px;
 }
 
-
-#episodelist.scroll-x {
-	overflow-x: auto;
-	overflow-y: hidden;
-	white-space: nowrap;
-	-ms-overflow-style: none;
-	scrollbar-width: none;
-}
-
-#episodelist.scroll-x::-webkit-scrollbar {
-	height: 10px;
-}
-
+/* Episode list scroll styling */
 #episodelist {
-	overflow-x: auto;
-	white-space: nowrap;
-}
-
-#episodelistt.scroll-x {
+	display: flex;
 	overflow-x: auto;
 	overflow-y: hidden;
-	white-space: nowrap;
-	-ms-overflow-style: none;
-	scrollbar-width: none;
+	gap: 10px;
+	scroll-behavior: smooth;
+	scrollbar-width: none; /* Firefox */
+	padding-bottom: 10px;
 }
 
-#episodelistt.scroll-x::-webkit-scrollbar {
-	height: 10px;
+/* Hide scrollbar by default */
+#episodelist::-webkit-scrollbar {
+	height: 0px;
+	transition: height 0.3s ease;
 }
 
-#episodelistt {
-	overflow-x: auto;
-	white-space: nowrap;
+/* Show scrollbar on hover */
+#episodelist:hover::-webkit-scrollbar {
+	height: 8px;
+}
+
+/* Custom scrollbar track */
+#episodelist::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 5px rgb(40, 40, 40);
+	border-radius: 20px;
+}
+
+/* Custom scrollbar thumb */
+#episodelist::-webkit-scrollbar-thumb {
+	background: rgb(40, 40, 40);
+	border-radius: 20px;
+}
+
+/* Hover effect on thumb */
+#episodelist::-webkit-scrollbar-thumb:hover {
+	background: rgb(116, 116, 116);
 }
 
 #episodes {
@@ -161,17 +194,19 @@ body {
 	}
 }
 
-#animetitle{
+#animetitle {
 	font-size: 27px;
 	font-weight: bold;
+}
 
-}
 #episodetitle:hover {
-color: white;
+	color: white;
 }
-#episodetitle{
+
+#episodetitle {
 	font-size: 20px;
 }
+
 #image {
 	width: 250px;
 	margin-right: 20px;
@@ -219,6 +254,9 @@ img {
 
 #animeInfo {
 	margin: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
 #anime {
@@ -238,7 +276,31 @@ img {
 #anime:hover {
 	opacity: 0.6;
 }
-
+#episodeHeader {
+	margin-top: 20px;
+	margin-bottom: 10px;
+  }
+  
+  .ep-number {
+	font-size: 28px;
+	font-weight: bold;
+	margin: 0;
+  }
+  
+  .ep-title {
+	font-size: 20px;
+	font-weight: 500;
+	margin: 5px 0;
+	line-height: 1.4;
+	max-width: 100%;
+  }
+  
+  .ep-anime {
+	font-size: 16px;
+	margin-top: 5px;
+	color: rgb(184, 184, 184);
+  }
+  
 .episode:hover {
 	opacity: 0.6;
 }
@@ -281,13 +343,6 @@ a:visited {
 
 #loading {
 	font-size: 40px;
-}
-
-#animeInfo {
-	margin: 30px;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
 }
 
 .description {
@@ -352,11 +407,6 @@ a:visited {
 	}
 }
 
-#app {
-	width: 100%;
-	aspect-ratio: 16/9;
-}
-
 .backward,
 .forward {
 	transition: 0.4s opacity, 0.4s visibility;
@@ -401,20 +451,19 @@ a:visited {
 }
 
 .toggle-btn {
-  background-color: #1e3a8a;
-  color: white;
-  border: 2px solid #1e3a8a;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+	background-color: #1e3a8a;
+	color: white;
+	border: 2px solid #1e3a8a;
+	padding: 8px 16px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .toggle-btn:hover {
-  background-color: #2563eb;
+	background-color: #2563eb;
 }
 
 .toggle-btn.active {
-  background-color: #2563eb;
-  color: white;
+	background-color: #2563eb;
+	color: white;
 }
-

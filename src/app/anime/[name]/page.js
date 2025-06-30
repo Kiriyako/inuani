@@ -1,50 +1,79 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Link from 'next/link';
+import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 
 export default function AnimePage({ params }) {
   const anime = params.name;
   const [data, setData] = useState(null);
+  const scrollRef = useRef(null);
 
- useEffect(() => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  useEffect(() => {
+    if (!anime) return;
 
-  fetch(`${apiUrl}/anime/info/${anime}`)
-    .then((res) => res.json())
-    .then((data) => {
-      // Check if episodesList is available and is an array
-      const episodesList = Array.isArray(data.data.episodesList) ? data.data.episodesList : [];
+    fetch(`https://hianime-mapper-ten.vercel.app/anime/info/${anime}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        const episodesList = Array.isArray(data.data.episodesList)
+          ? data.data.episodesList
+          : [];
 
-      // Transform API data
-      const transformedData = {
-        id: data.data.id.toString(),
-        title: data.data.title.userPreferred || data.data.title.english,
-        image: data.data.coverImage.large,
-        status: data.data.status,
-        type: data.data.format,
-        genres: data.data.genres,
-        description: data.data.description,
-        totalEpisodes: data.data.episodes,
-        episodes: episodesList.map((ep) => ({
-          id: ep.id.split('?')[0],  // Extract the part before the '?'
-          number: ep.number,
-          param: ep.episodeId,
-        })),
-      };
-      setData(transformedData);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}, [anime]);
+        const transformed = {
+          id: data.data.id?.toString(),
+          title: data.data.title?.userPreferred || data.data.title?.english || "Untitled",
+          image: data.data.coverImage?.large || "",
+          banner: data.data.bannerImage || "",
+          status: data.data.status || "Unknown",
+          type: data.data.format || "Unknown",
+          genres: data.data.genres || [],
+          description: data.data.description || "No description",
+          totalEpisodes: data.data.episodes || 0,
+          episodes: episodesList.map((ep) => ({
+            id: ep.id?.split("?")[0],
+            number: ep.number,
+            param: ep.episodeId,
+          })),
+        };
 
+        setData(transformed);
+      })
+      .catch((err) => console.error("Fetch error:", err));
+  }, [anime]);
 
-  if (!data) {
-    return null;
-  }
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleWheel = (e) => {
+      if (e.deltaY === 0) return;
+      e.preventDefault();
+      container.scrollLeft += e.deltaY;
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener("wheel", handleWheel);
+    };
+  }, [data]);
+
+  if (!data) return <p>Loading...</p>;
 
   return (
     <div id="animeInfo">
+      {/* Banner Section */}
+      {data.banner && (
+        <div id="banner">
+          <img
+            src={data.banner}
+            alt={`${data.title} Banner`}
+            style={{ width: "100%", maxHeight: "300px", objectFit: "cover" }}
+          />
+        </div>
+      )}
+
       <div id="i1">
         <div id="image">
           <img width={250} height={350} alt={data.title} src={data.image} />
@@ -54,27 +83,32 @@ export default function AnimePage({ params }) {
           <h2>
             {data.status} | {data.type} | {data.genres.join(", ")}
           </h2>
-          <div id="descriptionContainer" style={{ maxHeight: "200px", overflowY: "auto" }}>
+          <div
+            id="descriptionContainer"
+            style={{ maxHeight: "200px", overflowY: "auto" }}
+          >
             <h2
               dangerouslySetInnerHTML={{
-                __html: data.description || "No description available",
+                __html: data.description,
               }}
             ></h2>
           </div>
         </div>
       </div>
+
       <div id="episodes">
         <h2>Episodes ({data.totalEpisodes})</h2>
-        <div className="episodelist-container">
-          <div id="episodelist" className="scroll-x">
-            {data.episodes.map((ep) => (
-              <div className="episode-box" key={ep.id}>
-                <Link href={`/watch/${anime}/${ep.id}/${ep.param}`} rel="noopener noreferrer">
-                  <h2 className="episode-title">{ep.number}</h2>
-                </Link>
-              </div>
-            ))}
-          </div>
+        <div id="episodelist" className="scroll-x" ref={scrollRef}>
+          {data.episodes.map((ep) => (
+            <div className="episode-box" key={`${ep.id}-${ep.number}`}>
+              <Link
+                href={`/watch/${anime}/${ep.id}/${ep.param}`}
+                rel="noopener noreferrer"
+              >
+                <h2 className="episode-title">{ep.number}</h2>
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
     </div>
