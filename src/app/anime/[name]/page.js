@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 
-export default function AnimePage({ params }) {
-  const anime = params.name;
+export default function AnimePage() {
+  const { name: anime } = useParams(); // ✅ safely gets [name] route param
   const [data, setData] = useState(null);
   const scrollRef = useRef(null);
 
@@ -53,17 +54,13 @@ export default function AnimePage({ params }) {
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-
-    return () => {
-      container.removeEventListener("wheel", handleWheel);
-    };
+    return () => container.removeEventListener("wheel", handleWheel);
   }, [data]);
 
   if (!data) return <p>Loading...</p>;
 
   return (
     <div id="animeInfo">
-      {/* Banner Section */}
       {data.banner && (
         <div id="banner">
           <img

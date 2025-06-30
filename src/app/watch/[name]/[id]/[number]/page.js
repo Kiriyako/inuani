@@ -1,16 +1,17 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 
-export default function AnimePage({ params }) {
-  const anime = params.name;
-  const watch = params.id;
-  const slug = params.number;
+export default function AnimePage() {
+  const { name: anime, id: watch, number: slug } = useParams();
   const [animeData, setAnimeData] = useState(null);
   const [category, setCategory] = useState("sub");
   const scrollRef = useRef(null);
 
   useEffect(() => {
+    if (!anime) return;
+
     async function fetchData() {
       try {
         const res = await fetch(
@@ -18,6 +19,7 @@ export default function AnimePage({ params }) {
           { cache: "no-store" }
         );
         const json = await res.json();
+
         const episodes = json.data.episodesList.map((ep) => ({
           id: ep.id.split("?")[0],
           number: ep.number,
@@ -61,7 +63,7 @@ export default function AnimePage({ params }) {
   if (!animeData) return <div>Now Loading...</div>;
 
   const currentEpisode = animeData.episodes.find(
-    (ep) => ep.episodeId.toString() === slug.toString()
+    (ep) => ep.episodeId.toString() === slug?.toString()
   );
 
   const generateIframeSrc = () => {
@@ -70,8 +72,6 @@ export default function AnimePage({ params }) {
 
   return (
     <div id="main">
-
-
       <iframe
         src={generateIframeSrc()}
         style={{
